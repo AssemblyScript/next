@@ -1378,6 +1378,7 @@ declare class Set<K> {
   has(value: K): bool;
   add(value: K): void;
   delete(value: K): bool;
+  forEach(callbackfn: (value1: K, value2: K, set: Set<K>) => void): void;
   clear(): void;
   values(): K[]; // preliminary
   toString(): string;

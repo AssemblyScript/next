@@ -124,8 +124,63 @@ export class Set<T> {
     else this.delete(key);
   }
 
+  /**
+   * Locate the pointer of key
+   * @param key the key
+   * @param startPtr the start ptr of the set
+   * @param endPtr the end ptr of the set
+   */
+  private getPtr(key: T, startPtr: usize, endPtr: usize): usize {
+    if (!this.has(key)) return EMPTY;
+    var oldPtr = startPtr;
+    while (oldPtr != endPtr) {
+      let entry = changetype<SetEntry<T>>(oldPtr);
+      if (!(entry.taggedNext & EMPTY) && entry.key == key) {
+        return oldPtr;
+      }
+      oldPtr += ENTRY_SIZE<T>();
+    }
+    return EMPTY;
+  }
+
+  forEach(fn: (value1: T, value2: T, set: Set<T>) => void): void {
+    var startPtr = changetype<usize>(this.entries);
+    var oldEntriesOffset = this.entriesOffset;
+    var endPtr = startPtr + <usize>oldEntriesOffset * ENTRY_SIZE<T>();
+    var oldPtr = startPtr;
+    while (oldPtr != endPtr) {
+      let oldEntry = changetype<SetEntry<T>>(oldPtr);
+      oldPtr += ENTRY_SIZE<T>();
+      if (!(oldEntry.taggedNext & EMPTY)) {
+        let key = oldEntry.key;
+        fn(key, key, this);
+        let currentStartPtr = changetype<usize>(this.entries);
+        // Check if rehashing action triggered
+        if (startPtr != currentStartPtr) {
+          let newPtr = currentStartPtr;
+          let currentEndPtr = currentStartPtr + <usize>this.entriesOffset * ENTRY_SIZE<T>();
+          do {
+            oldPtr -= ENTRY_SIZE<T>();
+            let visitedEntry = changetype<SetEntry<T>>(oldPtr);
+            if (!(visitedEntry.taggedNext & EMPTY) && this.has(visitedEntry.key)) {
+              newPtr = this.getPtr(visitedEntry.key, currentStartPtr, currentEndPtr) + ENTRY_SIZE<T>();
+              break;
+            }
+          } while (oldPtr != startPtr);
+          startPtr = currentStartPtr;
+          oldPtr = newPtr;
+          endPtr = currentEndPtr;
+          //Check if the size of set changed
+        } else if (oldEntriesOffset != this.entriesOffset) {
+          endPtr = currentStartPtr + <usize>this.entriesOffset * ENTRY_SIZE<T>();
+          oldEntriesOffset = this.entriesOffset;
+        }
+      }
+    }
+  }
+
   delete(key: T): bool {
-    var entry = this.find(key, HASH<T>(key)); // unmanaged!
+    var entry = this.find(key, HASH<T>(key));
     if (!entry) return false;
     if (isManaged<T>()) __release(changetype<usize>(entry.key)); // exact 'key'
     entry.taggedNext |= EMPTY;
