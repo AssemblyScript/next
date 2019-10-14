@@ -685,7 +685,7 @@ declare function _BinaryenEventGetType(event: BinaryenEventRef): usize;
 declare function _BinaryenEventGetNumParams(event: BinaryenEventRef): BinaryenIndex;
 declare function _BinaryenEventGetParam(event: BinaryenEventRef, index: BinaryenIndex): BinaryenType;
 
-declare function _BinaryenSetFunctionTable(module: BinaryenModuleRef, initial: BinaryenIndex, maximum: BinaryenIndex, funcs: usize, numFuncs: BinaryenIndex): void;
+declare function _BinaryenSetFunctionTable(module: BinaryenModuleRef, initial: BinaryenIndex, maximum: BinaryenIndex, funcs: usize, numFuncs: BinaryenIndex, offset: BinaryenExpressionRef): void;
 
 declare function _BinaryenSetMemory(module: BinaryenModuleRef, initial: BinaryenIndex, maximum: BinaryenIndex, exportName: usize, segments: usize, segmentPassive: usize, segmentOffsets: usize, segmentSizes: usize, numSegments: BinaryenIndex, shared: bool): void;
 
@@ -705,6 +705,8 @@ declare function _BinaryenModuleAddDebugInfoFileName(module: BinaryenModuleRef, 
 declare function _BinaryenModuleGetDebugInfoFileName(module: BinaryenModuleRef, index: BinaryenIndex): usize;
 declare function _BinaryenModuleGetFeatures(module: BinaryenModuleRef): BinaryenFeatureFlags;
 declare function _BinaryenModuleSetFeatures(module: BinaryenModuleRef, featureFlags: BinaryenFeatureFlags): void;
+
+declare function _BinaryenAddCustomSection(module: BinaryenModuleRef, name: usize, contents: usize, contentsSize: BinaryenIndex): void;
 
 declare type BinaryenRelooperRef = usize;
 declare type BinaryenRelooperBlockRef = usize;

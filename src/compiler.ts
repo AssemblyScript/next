@@ -178,7 +178,9 @@ import {
   writeI64,
   writeF32,
   writeF64,
-  makeMap
+  makeMap,
+  writeU32Leb128,
+  lengthU32Leb128
 } from "./util";
 
 /** Compiler options. */
@@ -206,6 +208,8 @@ export class Options {
   features: Feature = Feature.MUTABLE_GLOBALS;
   /** If true, disallows unsafe features in user code. */
   noUnsafe: bool = false;
+  /** If true, emits a relocatable module. */
+  relocatable: bool = false;
 
   /** Hinted optimize level. Not applied by the compiler itself. */
   optimizeLevelHint: i32 = 0;
@@ -363,6 +367,15 @@ export class Compiler extends DiagnosticEmitter {
       module.addGlobal(BuiltinSymbols.rtti_base, NativeType.I32, true, module.i32(0));
     }
 
+    // add relocation globals
+    if (options.relocatable) {
+      let nativeSizeType = options.nativeSizeType;
+      module.addGlobalImport("__memory_base", "env", "memory_base", nativeSizeType, false);
+      module.setMemoryBase("__memory_base");
+      module.addGlobalImport("__table_base", "env", "table_base", nativeSizeType, false);
+      module.setTableBase("__table_base");
+    }
+
     // compile entry file(s) while traversing reachable elements
     var files = program.filesByName;
     for (let file of files.values()) {
@@ -459,6 +472,24 @@ export class Compiler extends DiagnosticEmitter {
     for (let file of this.program.filesByName.values()) {
       if (file.source.sourceKind == SourceKind.USER_ENTRY) this.ensureModuleExports(file);
     }
+
+    // add dylink section if relocatable
+    if (options.relocatable) {
+      let memorySize64 = i64_align(memoryOffset, 16);
+      assert(i64_is_u32(memorySize64));
+      let msize = i64_low(memorySize64);
+      let tsize = functionTable.length;
+      let size = lengthU32Leb128(msize) + lengthU32Leb128(tsize) + 3;
+      let buffer = new Uint8Array(size);
+      let offset = writeU32Leb128(msize, buffer, 0);  // memory_size
+      offset = writeU32Leb128(4, buffer, offset);     // memory_align
+      offset = writeU32Leb128(tsize, buffer, offset); // table_size
+      offset = writeU32Leb128(0, buffer, offset);     // table_align
+      offset = writeU32Leb128(0, buffer, offset);     // lib_count
+      assert(offset == size);
+      module.addCustomSection("dylink", buffer);
+    }
+
     return module;
   }
 
@@ -1466,6 +1497,7 @@ export class Compiler extends DiagnosticEmitter {
   /** Ensures that the specified string exists in static memory and returns a pointer to it. */
   ensureStaticString(stringValue: string): ExpressionRef {
     var program = this.program;
+    var module = this.module;
     var rtHeaderSize = program.runtimeHeaderSize;
     var stringInstance = assert(program.stringInstance);
     var stringSegment: MemorySegment;
@@ -1485,10 +1517,10 @@ export class Compiler extends DiagnosticEmitter {
     var ref = i64_add(stringSegment.offset, i64_new(rtHeaderSize));
     this.currentType = stringInstance.type;
     if (this.options.isWasm64) {
-      return this.module.i64(i64_low(ref), i64_high(ref));
+      return module.i64(i64_low(ref), i64_high(ref));
     } else {
       assert(i64_is_u32(ref));
-      return this.module.i32(i64_low(ref));
+      return module.i32(i64_low(ref));
     }
   }
 
@@ -7600,9 +7632,12 @@ export class Compiler extends DiagnosticEmitter {
         let arraySegment = this.ensureStaticArrayHeader(elementType, bufferSegment);
         let arrayAddress = i64_add(arraySegment.offset, i64_new(runtimeHeaderSize));
         this.currentType = arrayType;
-        return program.options.isWasm64
-          ? this.module.i64(i64_low(arrayAddress), i64_high(arrayAddress))
-          : this.module.i32(i64_low(arrayAddress));
+        if (program.options.isWasm64) {
+          return module.i64(i64_low(arrayAddress), i64_high(arrayAddress));
+        } else {
+          assert(i64_is_u32(arrayAddress));
+          return module.i32(i64_low(arrayAddress));
+        }
 
       // otherwise allocate a new array header and make it wrap a copy of the static buffer
       } else {

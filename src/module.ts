@@ -459,6 +459,37 @@ export class Module {
 
   private constructor() { }
 
+  // relocation
+
+  private mbase: usize = 0;
+  private tbase: usize = 0;
+
+  setMemoryBase(globalName: string | null): void {
+    this.mbase = globalName ? this.allocStringCached(globalName) : 0;
+  }
+
+  setTableBase(globalName: string | null): void {
+    this.tbase = globalName ? this.allocStringCached(globalName) : 0;
+  }
+
+  private relocMem(ptr: ExpressionRef): ExpressionRef {
+    var mbase = this.mbase;
+    if (!mbase) return ptr;
+    var ref = this.ref;
+    switch (_BinaryenExpressionGetType(ptr)) {
+      default: assert(false);
+      case NativeType.I32: return _BinaryenBinary(ref, BinaryOp.AddI32, _BinaryenGlobalGet(ref, mbase, NativeType.I32), ptr);
+      case NativeType.I64: return _BinaryenBinary(ref, BinaryOp.AddI64, _BinaryenGlobalGet(ref, mbase, NativeType.I64), ptr);
+    }
+  }
+
+  private relocTbl(idx: ExpressionRef): ExpressionRef {
+    var tbase = this.tbase;
+    if (!tbase) return idx;
+    var ref = this.ref;
+    return _BinaryenBinary(ref, BinaryOp.AddI32, _BinaryenGlobalGet(ref, tbase, NativeType.I32), idx);
+  }
+
   // types
 
   addFunctionType(
@@ -587,7 +618,7 @@ export class Module {
     offset: Index = 0,
     align: Index = bytes // naturally aligned by default
   ): ExpressionRef {
-    return _BinaryenLoad(this.ref, bytes, signed ? 1 : 0, offset, align, type, ptr);
+    return _BinaryenLoad(this.ref, bytes, signed ? 1 : 0, offset, align, type, this.relocMem(ptr));
   }
 
   store(
@@ -598,8 +629,7 @@ export class Module {
     offset: Index = 0,
     align: Index = bytes // naturally aligned by default
   ): ExpressionRef {
-    if (type < NativeType.None || type > NativeType.V128) throw new Error("here: " + type);
-    return _BinaryenStore(this.ref, bytes, offset, align, ptr, value, type);
+    return _BinaryenStore(this.ref, bytes, offset, align, this.relocMem(ptr), value, type);
   }
 
   atomic_load(
@@ -608,7 +638,7 @@ export class Module {
     type: NativeType,
     offset: Index = 0
   ): ExpressionRef {
-    return _BinaryenAtomicLoad(this.ref, bytes, offset, type, ptr);
+    return _BinaryenAtomicLoad(this.ref, bytes, offset, type, this.relocMem(ptr));
   }
 
   atomic_store(
@@ -618,7 +648,7 @@ export class Module {
     type: NativeType,
     offset: Index = 0
   ): ExpressionRef {
-    return _BinaryenAtomicStore(this.ref, bytes, offset, ptr, value, type);
+    return _BinaryenAtomicStore(this.ref, bytes, offset, this.relocMem(ptr), value, type);
   }
 
   atomic_rmw(
@@ -629,7 +659,7 @@ export class Module {
     value: ExpressionRef,
     type: NativeType
   ): ExpressionRef {
-    return _BinaryenAtomicRMW(this.ref, op, bytes, offset, ptr, value, type);
+    return _BinaryenAtomicRMW(this.ref, op, bytes, offset, this.relocMem(ptr), value, type);
   }
 
   atomic_cmpxchg(
@@ -640,7 +670,7 @@ export class Module {
     replacement: ExpressionRef,
     type: NativeType
   ): ExpressionRef {
-    return _BinaryenAtomicCmpxchg(this.ref, bytes, offset, ptr, expected, replacement, type);
+    return _BinaryenAtomicCmpxchg(this.ref, bytes, offset, this.relocMem(ptr), expected, replacement, type);
   }
 
   atomic_wait(
@@ -649,14 +679,14 @@ export class Module {
     timeout: ExpressionRef,
     expectedType: NativeType
   ): ExpressionRef {
-    return _BinaryenAtomicWait(this.ref, ptr, expected, timeout, expectedType);
+    return _BinaryenAtomicWait(this.ref, this.relocMem(ptr), expected, timeout, expectedType);
   }
 
   atomic_notify(
     ptr: ExpressionRef,
     notifyCount: ExpressionRef
   ): ExpressionRef {
-    return _BinaryenAtomicNotify(this.ref, ptr, notifyCount);
+    return _BinaryenAtomicNotify(this.ref, this.relocMem(ptr), notifyCount);
   }
 
   atomic_fence(): ExpressionRef {
@@ -798,8 +828,8 @@ export class Module {
     var cArr = allocPtrArray(operands);
     try {
       return isReturn
-        ? _BinaryenReturnCallIndirect(this.ref, index, cArr, operands && operands.length || 0, cStr)
-        : _BinaryenCallIndirect(this.ref, index, cArr, operands && operands.length || 0, cStr);
+        ? _BinaryenReturnCallIndirect(this.ref, this.relocTbl(index), cArr, operands && operands.length || 0, cStr)
+        : _BinaryenCallIndirect(this.ref, this.relocTbl(index), cArr, operands && operands.length || 0, cStr);
     } finally {
       memory.free(cArr);
     }
@@ -1137,19 +1167,44 @@ export class Module {
   ): void {
     var cStr = this.allocStringCached(exportName);
     var k = segments.length;
-    var segs = new Array<usize>(k);
-    var psvs = new Array<i8>(k);
-    var offs = new Array<ExpressionRef>(k);
-    var sizs = new Array<Index>(k);
-    for (let i = 0; i < k; ++i) {
-      let buffer = segments[i].buffer;
-      let offset = segments[i].offset;
-      segs[i] = allocU8Array(buffer);
-      psvs[i] = 0; // no passive segments currently
-      offs[i] = target == Target.WASM64
-        ? this.i64(i64_low(offset), i64_high(offset))
-        : this.i32(i64_low(offset));
-      sizs[i] = buffer.length;
+    var mbase = this.mbase;
+    var segs: usize[], psvs: Uint8Array, offs: ExpressionRef[], sizs: Index[];
+    if (mbase) {
+      // Offset expressions cannot currently use an addition but are restricted
+      // to a constant or a global.get, so make one large memory segment in the
+      // relocation case that starts exactly at the value of __memory_base.
+      let maxOffset = i64_zero;
+      for (let i = 0; i < k; ++i) {
+        let segment = segments[i];
+        let endOffset = i64_add(segment.offset, i64_new(segment.buffer.length));
+        if (i64_gt(endOffset, maxOffset)) maxOffset = endOffset;
+      }
+      assert(!i64_high(maxOffset)); // TODO: WASM64
+      let buffer = new Uint8Array(i64_low(maxOffset));
+      for (let i = 0; i < k; ++i) {
+        let segment = segments[i];
+        buffer.set(segment.buffer, i64_low(segment.offset));
+      }
+      segs = [ allocU8Array(buffer) ];
+      psvs = new Uint8Array(1);
+      offs = [ _BinaryenGlobalGet(this.ref, mbase, target == Target.WASM64 ? NativeType.I64 : NativeType.I32) ];
+      sizs = [ buffer.length ];
+      k = 1;
+    } else {
+      segs = new Array<usize>(k);
+      psvs = new Uint8Array(k);
+      offs = new Array<ExpressionRef>(k);
+      sizs = new Array<Index>(k);
+      for (let i = 0; i < k; ++i) {
+        let buffer = segments[i].buffer;
+        let offset = segments[i].offset;
+        segs[i] = allocU8Array(buffer);
+        psvs[i] = 0; // no passive segments currently
+        offs[i] = target == Target.WASM64
+          ? this.i64(i64_low(offset), i64_high(offset))
+          : this.i32(i64_low(offset));
+        sizs[i] = buffer.length;
+      }
     }
     var cArr1 = allocI32Array(segs);
     var cArr2 = allocU8Array(psvs);
@@ -1177,8 +1232,13 @@ export class Module {
       names[i] = this.allocStringCached(funcs[i]);
     }
     var cArr = allocI32Array(names);
+    var tbase = this.tbase;
     try {
-      _BinaryenSetFunctionTable(this.ref, initial, maximum, cArr, numNames);
+      _BinaryenSetFunctionTable(this.ref, initial, maximum, cArr, numNames,
+        tbase
+          ? _BinaryenGlobalGet(this.ref, tbase, NativeType.I32)
+          : this.i32(0)
+      );
     } finally {
       memory.free(cArr);
     }
@@ -1186,6 +1246,16 @@ export class Module {
 
   setStart(func: FunctionRef): void {
     _BinaryenSetStart(this.ref, func);
+  }
+
+  addCustomSection(name: string, contents: Uint8Array): void {
+    var cStr = this.allocStringCached(name);
+    var cArr = allocU8Array(contents);
+    try {
+      _BinaryenAddCustomSection(this.ref, cStr, cArr, contents.length);
+    } finally {
+      memory.free(cArr);
+    }
   }
 
   getOptimizeLevel(): i32 {
