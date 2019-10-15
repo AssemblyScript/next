@@ -54,6 +54,7 @@ export enum NodeKind {
   PARENTHESIZED,
   PROPERTYACCESS,
   TERNARY,
+  COALESCE,
   SUPER,
   THIS,
   TRUE,
@@ -329,6 +330,7 @@ export abstract class Node {
     expression: Expression,
     typeArgs: TypeNode[] | null,
     args: Expression[],
+    isOptionalChaining: bool,
     range: Range
   ): CallExpression {
     var expr = new CallExpression();
@@ -336,6 +338,7 @@ export abstract class Node {
     expr.expression = expression;
     expr.typeArguments = typeArgs;
     expr.arguments = args;
+    expr.isOptionalChaining = isOptionalChaining;
     return expr;
   }
 
@@ -369,12 +372,14 @@ export abstract class Node {
   static createElementAccessExpression(
     expression: Expression,
     element: Expression,
+    isOptionalChaining: bool,
     range: Range
   ): ElementAccessExpression {
     var expr = new ElementAccessExpression();
     expr.range = range;
     expr.expression = expression;
     expr.elementExpression = element;
+    expr.isOptionalChaining = isOptionalChaining;
     return expr;
   }
 
@@ -449,6 +454,18 @@ export abstract class Node {
     return expr;
   }
 
+  static createCoalesceExpression(
+    ifThen: Expression,
+    ifElse: Expression,
+    range: Range
+  ): CoalesceExpression {
+    var expr = new CoalesceExpression();
+    expr.range = range;
+    expr.ifThen = ifThen;
+    expr.ifElse = ifElse;
+    return expr;
+  }
+
   static createObjectLiteralExpression(
     names: IdentifierExpression[],
     values: Expression[],
@@ -474,12 +491,14 @@ export abstract class Node {
   static createPropertyAccessExpression(
     expression: Expression,
     property: IdentifierExpression,
+    isOptionalChaining: bool,
     range: Range
   ): PropertyAccessExpression {
     var expr = new PropertyAccessExpression();
     expr.range = range;
     expr.expression = expression;
     expr.property = property;
+    expr.isOptionalChaining = isOptionalChaining;
     return expr;
   }
 
@@ -1399,6 +1418,8 @@ export class CallExpression extends Expression {
   typeArguments: TypeNode[] | null;
   /** Provided arguments. */
   arguments: Expression[];
+  /** Whether optional chaining is used between the expression and the signature. */
+  isOptionalChaining: bool;
 
   /** Gets the type arguments range for reporting. */
   get typeArgumentsRange(): Range {
@@ -1429,6 +1450,16 @@ export class ClassExpression extends Expression {
   declaration: ClassDeclaration;
 }
 
+/** Represents a nullish coalescing expression. */
+export class CoalesceExpression extends Expression {
+  kind = NodeKind.COALESCE;
+
+  /** Expression head checked for being nullish. */
+  ifThen: Expression;
+  /** Expression executed when `ifThen` is nullish. */
+  ifElse: Expression;
+}
+
 /** Represents a comma expression composed of multiple expressions. */
 export class CommaExpression extends Expression {
   kind = NodeKind.COMMA;
@@ -1452,6 +1483,8 @@ export class ElementAccessExpression extends Expression {
   expression: Expression;
   /** Element of the expression being accessed. */
   elementExpression: Expression;
+  /** Whether optional chaining is used between the expression and the access. */
+  isOptionalChaining: bool;
 }
 
 /** Represents a float literal expression. */
@@ -1526,6 +1559,8 @@ export class PropertyAccessExpression extends Expression {
   expression: Expression;
   /** Property of the expression being accessed. */
   property: IdentifierExpression;
+  /** Whether optional chaining is used between the expression and the property. */
+  isOptionalChaining: bool;
 }
 
 /** Represents a regular expression literal expression. */
