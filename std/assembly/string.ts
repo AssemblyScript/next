@@ -22,7 +22,7 @@ import { Array } from "./array";
   static fromCharCodes(units: Array<i32>): String {
     var length = units.length;
     var out = __alloc(<usize>length << 1, idof<String>());
-    var ptr = units.dataStart;
+    var ptr = load<usize>(changetype<usize>(units), offsetof<Array<i32>>("dataStart"));
     for (let i = 0; i < length; ++i) {
       store<u16>(out + (<usize>i << 1), load<i32>(ptr + (<usize>i << 2)));
     }
@@ -48,7 +48,7 @@ import { Array } from "./array";
     return changetype<BLOCK>(changetype<usize>(this) - BLOCK_OVERHEAD).rtSize >> 1;
   }
 
-  @operator("[]") charAt(pos: i32): String {
+  charAt(pos: i32): String {
     if (<u32>pos >= <u32>this.length) return changetype<String>("");
     var out = __alloc(2, idof<String>());
     store<u16>(out, load<u16>(changetype<usize>(this) + (<usize>pos << 1)));
@@ -70,12 +70,7 @@ import { Array } from "./array";
     return (first - 0xD800 << 10) + (second - 0xDC00) + 0x10000;
   }
 
-  @operator("+") private static __concat(left: String, right: String): String {
-    return select<String>(left, changetype<String>("null"), left !== null).concat(right);
-  }
-
   concat(other: String): String {
-    if (other === null) other = changetype<String>("null");
     var thisSize: isize = this.length << 1;
     var otherSize: isize = other.length << 1;
     var outSize: usize = thisSize + otherSize;
@@ -87,60 +82,12 @@ import { Array } from "./array";
   }
 
   endsWith(search: String, end: i32 = String.MAX_LENGTH): bool {
-    if (search === null) return false;
     end = min(max(end, 0), this.length);
     var searchLength = <isize>search.length;
     var searchStart = <isize>end - searchLength;
     if (searchStart < 0) return false;
     // @ts-ignore: string <-> String
     return !compareImpl(this, searchStart, search, 0, searchLength);
-  }
-
-  @operator("==") private static __eq(left: String | null, right: String | null): bool {
-    if (left === right) return true;
-    if (left === null || right === null) return false;
-    var leftLength = left.length;
-    if (leftLength != right.length) return false;
-    // @ts-ignore: string <-> String
-    return !compareImpl(left, 0, right, 0, leftLength);
-  }
-
-  @operator.prefix("!")
-  private static __not(str: String | null): bool {
-    return str === null || !str.length;
-  }
-
-  @operator("!=")
-  private static __ne(left: String | null, right: String | null): bool {
-    return !this.__eq(left, right);
-  }
-
-  @operator(">") private static __gt(left: String | null, right: String | null): bool {
-    if (left === right || left === null || right === null) return false;
-    var leftLength  = left.length;
-    if (!leftLength) return false;
-    var rightLength = right.length;
-    if (!rightLength) return true;
-    // @ts-ignore: string <-> String
-    return compareImpl(left, 0, right, 0, min(leftLength, rightLength)) > 0;
-  }
-
-  @operator(">=") private static __gte(left: String, right: String): bool {
-    return !this.__lt(left, right);
-  }
-
-  @operator("<") private static __lt(left: String, right: String): bool {
-    if (left === right || left === null || right === null) return false;
-    var rightLength = right.length;
-    if (!rightLength) return false;
-    var leftLength  = left.length;
-    if (!leftLength) return true;
-    // @ts-ignore: string <-> String
-    return compareImpl(left, 0, right, 0, min(leftLength, rightLength)) < 0;
-  }
-
-  @operator("<=") private static __lte(left: String, right: String): bool {
-    return !this.__gt(left, right);
   }
 
   includes(search: String, start: i32 = 0): bool {
@@ -175,7 +122,7 @@ import { Array } from "./array";
 
   // TODO: implement full locale comparison with locales and Collator options
   localeCompare(other: String): i32 {
-    if (other === this) return 0; // compare pointers
+    if (changetype<usize>(other) == changetype<usize>(this)) return 0;
     var len: isize = this.length;
     var otherLen: isize = other.length;
     if (otherLen != len) return select(1, -1, len > otherLen);
@@ -185,7 +132,6 @@ import { Array } from "./array";
   }
 
   startsWith(search: String, start: i32 = 0): bool {
-    if (search === null) search = changetype<String>("null");
     var len = <isize>this.length;
     var searchStart = min(max(<isize>start, 0), len);
     var searchLength = <isize>search.length;
@@ -455,9 +401,9 @@ import { Array } from "./array";
 
   split(separator: String | null = null, limit: i32 = i32.MAX_VALUE): String[] {
     if (!limit) return changetype<Array<String>>(__allocArray(0, alignof<String>(), idof<Array<String>>())); // retains
-    if (separator === null) return [this];
+    if (!changetype<usize>(separator)) return [this];
     var length: isize = this.length;
-    var sepLen = separator.length;
+    var sepLen = changetype<String>(separator).length;
     if (limit < 0) limit = i32.MAX_VALUE;
     if (!sepLen) {
       if (!length) return changetype<Array<String>>(__allocArray(0, alignof<String>(), idof<Array<String>>()));  // retains
@@ -481,7 +427,7 @@ import { Array } from "./array";
     }
     var result = changetype<Array<String>>(__allocArray(0, alignof<String>(), idof<Array<String>>())); // retains
     var end = 0, start = 0, i = 0;
-    while (~(end = this.indexOf(separator, start))) {
+    while (~(end = this.indexOf(changetype<String>(separator), start))) {
       let len = end - start;
       if (len > 0) {
         let out = __alloc(<usize>len << 1, idof<String>());
@@ -631,6 +577,71 @@ import { Array } from "./array";
 
   toString(): String {
     return this;
+  }
+
+  @operator("==")
+  private _eq(other: string): bool {
+    var thisLength = this.length;
+    if (thisLength != other.length) return false;
+    return !compareImpl(changetype<string>(this), 0, other, 0, thisLength);
+  }
+
+  @operator("!=")
+  private _ne(other: string): bool {
+    return !this._eq(other);
+  }
+
+  @operator(">")
+  private static _gt(left: String | null, right: String | null): bool {
+    if (
+       changetype<usize>(left) == changetype<usize>(right) ||
+      !changetype<usize>(left) ||
+      !changetype<usize>(right)
+    ) return false;
+    var leftLength  = changetype<String>(left).length;
+    if (!leftLength) return false;
+    var rightLength = changetype<String>(right).length;
+    if (!rightLength) return true;
+    // @ts-ignore: string <-> String
+    return compareImpl(left, 0, right, 0, min(leftLength, rightLength)) > 0;
+  }
+
+  @operator(">=")
+  private static _ge(left: String | null, right: String | null): bool {
+    return !String.__lt(left, right);
+  }
+
+  @operator("<")
+  private static __lt(left: String | null, right: String | null): bool {
+    if (
+       changetype<usize>(left) == changetype<usize>(right) ||
+      !changetype<usize>(left) ||
+      !changetype<usize>(right)
+    ) return false;
+    var rightLength = changetype<String>(right).length;
+    if (!rightLength) return false;
+    var leftLength  = changetype<String>(left).length;
+    if (!leftLength) return true;
+    return compareImpl(changetype<string>(left), 0, changetype<string>(right), 0, min(leftLength, rightLength)) < 0;
+  }
+
+  @operator("<=")
+  private static __le(left: String | null, right: String | null): bool {
+    return !String._gt(left, right);
+  }
+
+  @operator("+") private static _add(left: String, right: String): String {
+    return select<String>(left, changetype<String>("null"), changetype<usize>(left) != 0).concat(right);
+  }
+
+  @operator("[]")
+  private _get(index: i32): String {
+    return this.charAt(index);
+  }
+
+  @operator.prefix("!")
+  private _not(): bool {
+    return !this.length;
   }
 }
 

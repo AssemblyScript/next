@@ -3187,7 +3187,7 @@
     if
      i32.const 1376
      i32.const 1536
-     i32.const 104
+     i32.const 107
      i32.const 42
      call $~lib/builtins/abort
      unreachable
@@ -3385,7 +3385,7 @@
   if
    i32.const 1376
    i32.const 1536
-   i32.const 104
+   i32.const 107
    i32.const 42
    call $~lib/builtins/abort
    unreachable
@@ -16659,24 +16659,8 @@
   end
   i32.const 0
  )
- (func $~lib/string/String.__eq (; 246 ;) (param $0 i32) (param $1 i32) (result i32)
+ (func $~lib/string/String#_eq (; 246 ;) (param $0 i32) (param $1 i32) (result i32)
   (local $2 i32)
-  local.get $0
-  local.get $1
-  i32.eq
-  if
-   i32.const 1
-   return
-  end
-  local.get $1
-  i32.eqz
-  i32.const 1
-  local.get $0
-  select
-  if
-   i32.const 0
-   return
-  end
   local.get $0
   call $~lib/string/String#get:length
   local.tee $2
@@ -19297,7 +19281,7 @@
   if
    i32.const 1040
    i32.const 1088
-   i32.const 54
+   i32.const 56
    i32.const 43
    call $~lib/builtins/abort
    unreachable
@@ -31167,14 +31151,14 @@
                    call $~lib/typedarray/Int8Array#join
                    local.tee $0
                    i32.const 3008
-                   call $~lib/string/String.__eq
+                   call $~lib/string/String#_eq
                    i32.eqz
                    br_if $folding-inner12
                    local.get $1
                    call $~lib/typedarray/Int8Array#join
                    local.tee $29
                    i32.const 3008
-                   call $~lib/string/String.__eq
+                   call $~lib/string/String#_eq
                    i32.eqz
                    br_if $folding-inner13
                    local.get $0
@@ -31209,14 +31193,14 @@
                    call $~lib/typedarray/Uint8Array#join
                    local.tee $0
                    i32.const 3008
-                   call $~lib/string/String.__eq
+                   call $~lib/string/String#_eq
                    i32.eqz
                    br_if $folding-inner12
                    local.get $1
                    call $~lib/typedarray/Uint8Array#join
                    local.tee $29
                    i32.const 3008
-                   call $~lib/string/String.__eq
+                   call $~lib/string/String#_eq
                    i32.eqz
                    br_if $folding-inner13
                    local.get $0
@@ -31251,14 +31235,14 @@
                    call $~lib/typedarray/Uint8Array#join
                    local.tee $0
                    i32.const 3008
-                   call $~lib/string/String.__eq
+                   call $~lib/string/String#_eq
                    i32.eqz
                    br_if $folding-inner12
                    local.get $1
                    call $~lib/typedarray/Uint8Array#join
                    local.tee $29
                    i32.const 3008
-                   call $~lib/string/String.__eq
+                   call $~lib/string/String#_eq
                    i32.eqz
                    br_if $folding-inner13
                    local.get $0
@@ -31293,14 +31277,14 @@
                    call $~lib/typedarray/Int16Array#join
                    local.tee $0
                    i32.const 3008
-                   call $~lib/string/String.__eq
+                   call $~lib/string/String#_eq
                    i32.eqz
                    br_if $folding-inner12
                    local.get $1
                    call $~lib/typedarray/Int16Array#join
                    local.tee $29
                    i32.const 3008
-                   call $~lib/string/String.__eq
+                   call $~lib/string/String#_eq
                    i32.eqz
                    br_if $folding-inner13
                    local.get $0
@@ -31335,14 +31319,14 @@
                    call $~lib/typedarray/Uint16Array#join
                    local.tee $0
                    i32.const 3008
-                   call $~lib/string/String.__eq
+                   call $~lib/string/String#_eq
                    i32.eqz
                    br_if $folding-inner12
                    local.get $1
                    call $~lib/typedarray/Uint16Array#join
                    local.tee $29
                    i32.const 3008
-                   call $~lib/string/String.__eq
+                   call $~lib/string/String#_eq
                    i32.eqz
                    br_if $folding-inner13
                    local.get $0
@@ -31377,14 +31361,14 @@
                    call $~lib/typedarray/Int32Array#join
                    local.tee $0
                    i32.const 3008
-                   call $~lib/string/String.__eq
+                   call $~lib/string/String#_eq
                    i32.eqz
                    br_if $folding-inner12
                    local.get $1
                    call $~lib/typedarray/Int32Array#join
                    local.tee $29
                    i32.const 3008
-                   call $~lib/string/String.__eq
+                   call $~lib/string/String#_eq
                    i32.eqz
                    br_if $folding-inner13
                    local.get $0
@@ -31419,14 +31403,14 @@
                    call $~lib/typedarray/Uint32Array#join
                    local.tee $0
                    i32.const 3008
-                   call $~lib/string/String.__eq
+                   call $~lib/string/String#_eq
                    i32.eqz
                    br_if $folding-inner12
                    local.get $1
                    call $~lib/typedarray/Uint32Array#join
                    local.tee $29
                    i32.const 3008
-                   call $~lib/string/String.__eq
+                   call $~lib/string/String#_eq
                    i32.eqz
                    br_if $folding-inner13
                    local.get $0
@@ -31461,14 +31445,14 @@
                    call $~lib/typedarray/Int64Array#join
                    local.tee $0
                    i32.const 3008
-                   call $~lib/string/String.__eq
+                   call $~lib/string/String#_eq
                    i32.eqz
                    br_if $folding-inner12
                    local.get $1
                    call $~lib/typedarray/Int64Array#join
                    local.tee $29
                    i32.const 3008
-                   call $~lib/string/String.__eq
+                   call $~lib/string/String#_eq
                    i32.eqz
                    br_if $folding-inner13
                    local.get $0
@@ -31503,14 +31487,14 @@
                    call $~lib/typedarray/Uint64Array#join
                    local.tee $0
                    i32.const 3008
-                   call $~lib/string/String.__eq
+                   call $~lib/string/String#_eq
                    i32.eqz
                    br_if $folding-inner12
                    local.get $1
                    call $~lib/typedarray/Uint64Array#join
                    local.tee $29
                    i32.const 3008
-                   call $~lib/string/String.__eq
+                   call $~lib/string/String#_eq
                    i32.eqz
                    br_if $folding-inner13
                    local.get $0
@@ -31545,14 +31529,14 @@
                    call $~lib/typedarray/Float32Array#join
                    local.tee $0
                    i32.const 4176
-                   call $~lib/string/String.__eq
+                   call $~lib/string/String#_eq
                    i32.eqz
                    br_if $folding-inner14
                    local.get $1
                    call $~lib/typedarray/Float32Array#join
                    local.tee $29
                    i32.const 4176
-                   call $~lib/string/String.__eq
+                   call $~lib/string/String#_eq
                    i32.eqz
                    br_if $folding-inner15
                    local.get $0
@@ -31587,14 +31571,14 @@
                    call $~lib/typedarray/Float64Array#join
                    local.tee $0
                    i32.const 4176
-                   call $~lib/string/String.__eq
+                   call $~lib/string/String#_eq
                    i32.eqz
                    br_if $folding-inner14
                    local.get $1
                    call $~lib/typedarray/Float64Array#join
                    local.tee $29
                    i32.const 4176
-                   call $~lib/string/String.__eq
+                   call $~lib/string/String#_eq
                    i32.eqz
                    br_if $folding-inner15
                    local.get $0

@@ -1576,24 +1576,8 @@
   end
   i32.const 0
  )
- (func $~lib/string/String.__eq (; 24 ;) (param $0 i32) (param $1 i32) (result i32)
+ (func $~lib/string/String#_eq (; 24 ;) (param $0 i32) (param $1 i32) (result i32)
   (local $2 i32)
-  local.get $0
-  local.get $1
-  i32.eq
-  if
-   i32.const 1
-   return
-  end
-  local.get $1
-  i32.eqz
-  i32.const 1
-  local.get $0
-  select
-  if
-   i32.const 0
-   return
-  end
   local.get $0
   call $~lib/string/String#get:length
   local.tee $2
@@ -1630,7 +1614,7 @@
   call $~lib/string/String.UTF16.decodeUnsafe
   local.tee $2
   i32.const 1296
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -1645,7 +1629,7 @@
   call $~lib/string/String.UTF16.decodeUnsafe
   local.tee $3
   i32.const 1040
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -1660,7 +1644,7 @@
   call $~lib/string/String.UTF16.decodeUnsafe
   local.tee $4
   i32.const 1312
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -1677,7 +1661,7 @@
   call $~lib/string/String.UTF16.decodeUnsafe
   local.tee $5
   i32.const 1344
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -1694,7 +1678,7 @@
   call $~lib/string/String.UTF16.decodeUnsafe
   local.tee $6
   i32.const 1376
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -1711,7 +1695,7 @@
   call $~lib/string/String.UTF16.decodeUnsafe
   local.tee $7
   i32.const 1408
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -1728,7 +1712,7 @@
   call $~lib/string/String.UTF16.decodeUnsafe
   local.tee $1
   i32.const 1296
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -2466,7 +2450,7 @@
   if
    i32.const 0
    i32.const 1440
-   i32.const 738
+   i32.const 749
    i32.const 7
    call $~lib/builtins/abort
    unreachable
@@ -2708,7 +2692,7 @@
   call $~lib/string/String.UTF8.decode
   local.tee $2
   i32.const 1040
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -2766,7 +2750,7 @@
   call $~lib/string/String.UTF8.decode
   local.tee $3
   i32.const 1520
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -2784,7 +2768,7 @@
   call $~lib/string/String.UTF8.decode
   local.tee $5
   i32.const 1520
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -2833,7 +2817,7 @@
   call $~lib/string/String.UTF8.decodeUnsafe
   local.tee $8
   i32.const 1296
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -2849,7 +2833,7 @@
   call $~lib/string/String.UTF8.decodeUnsafe
   local.tee $7
   i32.const 1040
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -2865,7 +2849,7 @@
   call $~lib/string/String.UTF8.decodeUnsafe
   local.tee $6
   i32.const 1312
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -2883,7 +2867,7 @@
   call $~lib/string/String.UTF8.decodeUnsafe
   local.tee $5
   i32.const 1376
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -2901,7 +2885,7 @@
   call $~lib/string/String.UTF8.decodeUnsafe
   local.tee $4
   i32.const 1408
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -2919,7 +2903,7 @@
   call $~lib/string/String.UTF8.decodeUnsafe
   local.tee $3
   i32.const 1296
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -2937,7 +2921,7 @@
   call $~lib/string/String.UTF8.decodeUnsafe
   local.tee $2
   i32.const 1552
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -2955,7 +2939,7 @@
   call $~lib/string/String.UTF8.decodeUnsafe
   local.tee $9
   i32.const 1408
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -2973,7 +2957,7 @@
   call $~lib/string/String.UTF8.decodeUnsafe
   local.tee $1
   i32.const 1296
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -3017,7 +3001,7 @@
   call $~lib/string/String.UTF8.decode
   local.tee $2
   local.get $0
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -3033,7 +3017,7 @@
   call $~lib/string/String.UTF16.decode
   local.tee $4
   local.get $0
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -3074,7 +3058,7 @@
   call $~lib/string/String.UTF16.decode
   local.tee $1
   i32.const 1040
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -3125,7 +3109,7 @@
   call $~lib/string/String.UTF8.decode
   local.tee $1
   i32.const 1040
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0

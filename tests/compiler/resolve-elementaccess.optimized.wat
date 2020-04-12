@@ -1806,37 +1806,23 @@
   end
   i32.const 0
  )
- (func $~lib/string/String.__eq (; 16 ;) (param $0 i32) (param $1 i32) (result i32)
+ (func $~lib/string/String#_eq (; 16 ;) (param $0 i32) (param $1 i32) (result i32)
   (local $2 i32)
   local.get $0
+  call $~lib/string/String#get:length
+  local.tee $2
   local.get $1
-  i32.eq
+  call $~lib/string/String#get:length
+  i32.ne
   if
-   i32.const 1
+   i32.const 0
    return
   end
-  block $folding-inner0
-   local.get $1
-   i32.eqz
-   i32.const 1
-   local.get $0
-   select
-   br_if $folding-inner0
-   local.get $0
-   call $~lib/string/String#get:length
-   local.tee $2
-   local.get $1
-   call $~lib/string/String#get:length
-   i32.ne
-   br_if $folding-inner0
-   local.get $0
-   local.get $1
-   local.get $2
-   call $~lib/util/string/compareImpl
-   i32.eqz
-   return
-  end
-  i32.const 0
+  local.get $0
+  local.get $1
+  local.get $2
+  call $~lib/util/string/compareImpl
+  i32.eqz
  )
  (func $~lib/typedarray/Uint8Array#__set (; 17 ;) (param $0 i32) (param $1 i32) (param $2 i32)
   local.get $1
@@ -1931,7 +1917,7 @@
   f64.promote_f32
   call $~lib/util/number/dtoa
   i32.const 2464
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -1947,7 +1933,7 @@
   f64.promote_f32
   call $~lib/util/number/dtoa
   i32.const 2560
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -1972,7 +1958,7 @@
   f64.promote_f32
   call $~lib/util/number/dtoa
   i32.const 2592
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -2031,7 +2017,7 @@
   call $~lib/typedarray/Uint8Array#__get
   call $~lib/number/U8#toString
   i32.const 2656
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -2046,7 +2032,7 @@
   call $~lib/typedarray/Uint8Array#__get
   call $~lib/number/U8#toString
   i32.const 2688
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -2070,7 +2056,7 @@
   call $~lib/typedarray/Uint8Array#__get
   call $~lib/number/U8#toString
   i32.const 2720
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0

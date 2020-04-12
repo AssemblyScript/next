@@ -1904,7 +1904,7 @@
   if
    i32.const 32
    i32.const 80
-   i32.const 57
+   i32.const 60
    i32.const 60
    call $~lib/builtins/abort
    unreachable
@@ -1975,7 +1975,9 @@
   local.get $0
   call $~lib/rt/pure/__retain
   local.set $0
-  i32.const 1
+  local.get $0
+  i32.const 0
+  i32.ne
   if (result i32)
    local.get $0
    i32.const 0
@@ -1987,6 +1989,7 @@
   local.get $0
   call $~lib/rt/pure/__release
   local.get $1
+  return
  )
  (func $std/array/Ref#constructor (; 24 ;) (param $0 i32) (param $1 i32) (result i32)
   local.get $0
@@ -2008,6 +2011,8 @@
   local.get $0
   call $~lib/rt/pure/__retain
   local.set $0
+  local.get $0
+  drop
   i32.const 0
   if (result i32)
    local.get $0
@@ -2020,6 +2025,7 @@
   local.get $0
   call $~lib/rt/pure/__release
   local.get $1
+  return
  )
  (func $~lib/arraybuffer/ArrayBufferView#constructor (; 26 ;) (param $0 i32) (param $1 i32) (param $2 i32) (result i32)
   (local $3 i32)
@@ -2114,6 +2120,8 @@
   local.get $0
   call $~lib/rt/pure/__retain
   local.set $0
+  local.get $0
+  drop
   i32.const 0
   if (result i32)
    local.get $0
@@ -2126,6 +2134,7 @@
   local.get $0
   call $~lib/rt/pure/__release
   local.get $1
+  return
  )
  (func $~lib/array/Array.isArray<i32> (; 29 ;) (param $0 i32) (result i32)
   i32.const 0
@@ -2135,6 +2144,8 @@
   local.get $0
   call $~lib/rt/pure/__retain
   local.set $0
+  local.get $0
+  drop
   i32.const 0
   if (result i32)
    local.get $0
@@ -2147,12 +2158,15 @@
   local.get $0
   call $~lib/rt/pure/__release
   local.get $1
+  return
  )
  (func $~lib/array/Array.isArray<~lib/array/Array<i32>> (; 31 ;) (param $0 i32) (result i32)
   (local $1 i32)
   local.get $0
   call $~lib/rt/pure/__retain
   local.set $0
+  local.get $0
+  drop
   i32.const 1
   if (result i32)
    local.get $0
@@ -2165,6 +2179,7 @@
   local.get $0
   call $~lib/rt/pure/__release
   local.get $1
+  return
  )
  (func $~lib/util/memory/memcpy (; 32 ;) (param $0 i32) (param $1 i32) (param $2 i32)
   (local $3 i32)
@@ -3556,7 +3571,7 @@
   if
    i32.const 496
    i32.const 80
-   i32.const 104
+   i32.const 107
    i32.const 42
    call $~lib/builtins/abort
    unreachable
@@ -3759,7 +3774,7 @@
   if
    i32.const 496
    i32.const 80
-   i32.const 104
+   i32.const 107
    i32.const 42
    call $~lib/builtins/abort
    unreachable
@@ -4183,7 +4198,7 @@
   if
    i32.const 496
    i32.const 80
-   i32.const 104
+   i32.const 107
    i32.const 42
    call $~lib/builtins/abort
    unreachable
@@ -4206,7 +4221,7 @@
   if
    i32.const 976
    i32.const 80
-   i32.const 299
+   i32.const 302
    i32.const 21
    call $~lib/builtins/abort
    unreachable
@@ -4317,7 +4332,7 @@
    call $~lib/rt/pure/__release
    i32.const 32
    i32.const 80
-   i32.const 229
+   i32.const 232
    i32.const 60
    call $~lib/builtins/abort
    unreachable
@@ -4617,7 +4632,7 @@
   if
    i32.const 976
    i32.const 80
-   i32.const 360
+   i32.const 363
    i32.const 21
    call $~lib/builtins/abort
    unreachable
@@ -5324,7 +5339,7 @@
   if
    i32.const 496
    i32.const 80
-   i32.const 104
+   i32.const 107
    i32.const 42
    call $~lib/builtins/abort
    unreachable
@@ -5340,7 +5355,7 @@
    call $~lib/rt/pure/__release
    i32.const 3920
    i32.const 80
-   i32.const 108
+   i32.const 111
    i32.const 40
    call $~lib/builtins/abort
    unreachable
@@ -5478,7 +5493,7 @@
   if
    i32.const 496
    i32.const 80
-   i32.const 104
+   i32.const 107
    i32.const 42
    call $~lib/builtins/abort
    unreachable
@@ -5511,7 +5526,7 @@
    if
     i32.const 496
     i32.const 80
-    i32.const 120
+    i32.const 123
     i32.const 22
     call $~lib/builtins/abort
     unreachable
@@ -6232,7 +6247,7 @@
   if
    i32.const 496
    i32.const 80
-   i32.const 104
+   i32.const 107
    i32.const 42
    call $~lib/builtins/abort
    unreachable
@@ -8163,7 +8178,7 @@
   if
    i32.const 496
    i32.const 80
-   i32.const 104
+   i32.const 107
    i32.const 42
    call $~lib/builtins/abort
    unreachable
@@ -9487,7 +9502,7 @@
   if
    i32.const 32
    i32.const 80
-   i32.const 57
+   i32.const 60
    i32.const 60
    call $~lib/builtins/abort
    unreachable
@@ -9600,7 +9615,7 @@
     call $~lib/rt/pure/__release
     i32.const 496
     i32.const 80
-    i32.const 120
+    i32.const 123
     i32.const 22
     call $~lib/builtins/abort
     unreachable
@@ -9883,7 +9898,7 @@
   if
    i32.const 496
    i32.const 80
-   i32.const 104
+   i32.const 107
    i32.const 42
    call $~lib/builtins/abort
    unreachable
@@ -9899,7 +9914,7 @@
    call $~lib/rt/pure/__release
    i32.const 3920
    i32.const 80
-   i32.const 108
+   i32.const 111
    i32.const 40
    call $~lib/builtins/abort
    unreachable
@@ -10010,7 +10025,7 @@
   if
    i32.const 32
    i32.const 80
-   i32.const 57
+   i32.const 60
    i32.const 60
    call $~lib/builtins/abort
    unreachable
@@ -10138,7 +10153,7 @@
     call $~lib/rt/pure/__release
     i32.const 496
     i32.const 80
-    i32.const 120
+    i32.const 123
     i32.const 22
     call $~lib/builtins/abort
     unreachable
@@ -10414,7 +10429,7 @@
   if
    i32.const 496
    i32.const 80
-   i32.const 104
+   i32.const 107
    i32.const 42
    call $~lib/builtins/abort
    unreachable
@@ -10430,7 +10445,7 @@
    call $~lib/rt/pure/__release
    i32.const 3920
    i32.const 80
-   i32.const 108
+   i32.const 111
    i32.const 40
    call $~lib/builtins/abort
    unreachable
@@ -10721,7 +10736,7 @@
   if
    i32.const 496
    i32.const 80
-   i32.const 104
+   i32.const 107
    i32.const 42
    call $~lib/builtins/abort
    unreachable
@@ -10972,15 +10987,13 @@
    i32.const 1
   else
    local.get $0
-   i32.const 0
-   i32.eq
+   i32.eqz
   end
   if (result i32)
    i32.const 1
   else
    local.get $1
-   i32.const 0
-   i32.eq
+   i32.eqz
   end
   if
    i32.const 0
@@ -11081,94 +11094,49 @@
   local.get $1
   call $std/array/assertSorted<~lib/string/String | null>
  )
- (func $~lib/string/String.__eq (; 216 ;) (param $0 i32) (param $1 i32) (result i32)
+ (func $~lib/string/String#_eq (; 216 ;) (param $0 i32) (param $1 i32) (result i32)
   (local $2 i32)
   (local $3 i32)
-  local.get $0
-  call $~lib/rt/pure/__retain
-  local.set $0
   local.get $1
   call $~lib/rt/pure/__retain
   local.set $1
   local.get $0
-  local.get $1
-  i32.eq
-  if
-   i32.const 1
-   local.set $2
-   local.get $0
-   call $~lib/rt/pure/__release
-   local.get $1
-   call $~lib/rt/pure/__release
-   local.get $2
-   return
-  end
-  local.get $0
-  i32.const 0
-  i32.eq
-  if (result i32)
-   i32.const 1
-  else
-   local.get $1
-   i32.const 0
-   i32.eq
-  end
-  if
-   i32.const 0
-   local.set $2
-   local.get $0
-   call $~lib/rt/pure/__release
-   local.get $1
-   call $~lib/rt/pure/__release
-   local.get $2
-   return
-  end
-  local.get $0
   call $~lib/string/String#get:length
-  local.set $3
-  local.get $3
+  local.set $2
+  local.get $2
   local.get $1
   call $~lib/string/String#get:length
   i32.ne
   if
    i32.const 0
-   local.set $2
-   local.get $0
-   call $~lib/rt/pure/__release
+   local.set $3
    local.get $1
    call $~lib/rt/pure/__release
-   local.get $2
+   local.get $3
    return
   end
   local.get $0
   i32.const 0
   local.get $1
   i32.const 0
-  local.get $3
+  local.get $2
   call $~lib/util/string/compareImpl
   i32.eqz
-  local.set $2
-  local.get $0
-  call $~lib/rt/pure/__release
+  local.set $3
   local.get $1
   call $~lib/rt/pure/__release
-  local.get $2
+  local.get $3
  )
- (func $~lib/string/String.__ne (; 217 ;) (param $0 i32) (param $1 i32) (result i32)
+ (func $~lib/string/String#_ne (; 217 ;) (param $0 i32) (param $1 i32) (result i32)
   (local $2 i32)
-  local.get $0
-  call $~lib/rt/pure/__retain
-  local.set $0
   local.get $1
   call $~lib/rt/pure/__retain
   local.set $1
   local.get $0
   local.get $1
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   local.set $2
-  local.get $0
-  call $~lib/rt/pure/__release
   local.get $1
   call $~lib/rt/pure/__release
   local.get $2
@@ -11179,6 +11147,7 @@
   (local $5 i32)
   (local $6 i32)
   (local $7 i32)
+  (local $8 i32)
   local.get $0
   call $~lib/rt/pure/__retain
   local.set $0
@@ -11232,11 +11201,24 @@
     local.get $3
     call $~lib/array/Array<~lib/string/String | null>#__get
     local.tee $5
+    local.tee $7
+    i32.eqz
     local.get $1
     local.get $3
     call $~lib/array/Array<~lib/string/String | null>#__get
     local.tee $6
-    call $~lib/string/String.__ne
+    local.tee $8
+    i32.eqz
+    i32.or
+    if (result i32)
+     local.get $7
+     local.get $8
+     i32.ne
+    else
+     local.get $7
+     local.get $8
+     call $~lib/string/String#_ne
+    end
     if
      i32.const 0
      local.set $7
@@ -11282,7 +11264,7 @@
   if
    i32.const 32
    i32.const 80
-   i32.const 57
+   i32.const 60
    i32.const 60
    call $~lib/builtins/abort
    unreachable
@@ -11380,77 +11362,57 @@
   (local $4 i32)
   (local $5 i32)
   (local $6 i32)
-  (local $7 i32)
   local.get $1
   call $~lib/rt/pure/__retain
   local.set $1
-  local.get $1
-  i32.const 0
-  i32.eq
-  if
-   i32.const 5168
-   local.tee $2
-   local.get $1
-   local.tee $3
-   i32.ne
-   if
-    local.get $2
-    call $~lib/rt/pure/__retain
-    local.set $2
-    local.get $3
-    call $~lib/rt/pure/__release
-   end
-   local.get $2
-   local.set $1
-  end
   local.get $0
   call $~lib/string/String#get:length
   i32.const 1
   i32.shl
-  local.set $4
+  local.set $2
   local.get $1
   call $~lib/string/String#get:length
   i32.const 1
   i32.shl
-  local.set $5
-  local.get $4
-  local.get $5
+  local.set $3
+  local.get $2
+  local.get $3
   i32.add
-  local.set $6
-  local.get $6
+  local.set $4
+  local.get $4
   i32.const 0
   i32.eq
   if
    i32.const 5056
    call $~lib/rt/pure/__retain
-   local.set $2
+   local.set $5
    local.get $1
    call $~lib/rt/pure/__release
-   local.get $2
+   local.get $5
    return
   end
-  local.get $6
+  local.get $4
   i32.const 1
   call $~lib/rt/tlsf/__alloc
   call $~lib/rt/pure/__retain
-  local.set $7
-  local.get $7
+  local.set $6
+  local.get $6
   local.get $0
-  local.get $4
+  local.get $2
   call $~lib/memory/memory.copy
-  local.get $7
-  local.get $4
+  local.get $6
+  local.get $2
   i32.add
   local.get $1
-  local.get $5
+  local.get $3
   call $~lib/memory/memory.copy
-  local.get $7
-  local.set $2
+  local.get $6
+  local.set $5
   local.get $1
   call $~lib/rt/pure/__release
-  local.get $2
+  local.get $5
  )
- (func $~lib/string/String.__concat (; 222 ;) (param $0 i32) (param $1 i32) (result i32)
+ (func $~lib/string/String._add (; 222 ;) (param $0 i32) (param $1 i32) (result i32)
   (local $2 i32)
   local.get $0
   call $~lib/rt/pure/__retain
@@ -11506,7 +11468,7 @@
     i32.trunc_f64_s
     call $~lib/string/String#charAt
     local.tee $5
-    call $~lib/string/String.__concat
+    call $~lib/string/String._add
     local.tee $6
     local.tee $7
     local.get $1
@@ -11581,7 +11543,7 @@
     call $~lib/rt/pure/__release
     i32.const 496
     i32.const 80
-    i32.const 120
+    i32.const 123
     i32.const 22
     call $~lib/builtins/abort
     unreachable
@@ -11835,7 +11797,7 @@
   if
    i32.const 496
    i32.const 80
-   i32.const 104
+   i32.const 107
    i32.const 42
    call $~lib/builtins/abort
    unreachable
@@ -11851,7 +11813,7 @@
    call $~lib/rt/pure/__release
    i32.const 3920
    i32.const 80
-   i32.const 108
+   i32.const 111
    i32.const 40
    call $~lib/builtins/abort
    unreachable
@@ -11968,15 +11930,13 @@
    i32.const 1
   else
    local.get $0
-   i32.const 0
-   i32.eq
+   i32.eqz
   end
   if (result i32)
    i32.const 1
   else
    local.get $1
-   i32.const 0
-   i32.eq
+   i32.eqz
   end
   if
    i32.const 0
@@ -14748,8 +14708,6 @@
     local.get $8
     local.set $6
     local.get $6
-    i32.const 0
-    i32.ne
     if
      local.get $5
      local.get $6
@@ -14808,8 +14766,6 @@
     local.get $9
     local.set $6
     local.get $6
-    i32.const 0
-    i32.ne
     if
      local.get $6
      call $~lib/string/String#get:length
@@ -14873,8 +14829,6 @@
   local.get $8
   local.set $6
   local.get $6
-  i32.const 0
-  i32.ne
   if
    local.get $12
    local.get $10
@@ -14973,8 +14927,6 @@
    local.get $4
    local.set $5
    local.get $5
-   i32.const 0
-   i32.ne
    if (result i32)
     local.get $5
     call $std/array/Ref#toString
@@ -15023,14 +14975,12 @@
     local.get $9
     local.set $5
     local.get $5
-    i32.const 0
-    i32.ne
     if
      local.get $7
      local.get $5
      call $std/array/Ref#toString
      local.tee $9
-     call $~lib/string/String.__concat
+     call $~lib/string/String._add
      local.tee $10
      local.tee $11
      local.get $7
@@ -15054,7 +15004,7 @@
     if
      local.get $7
      local.get $2
-     call $~lib/string/String.__concat
+     call $~lib/string/String._add
      local.tee $10
      local.tee $12
      local.get $7
@@ -15099,14 +15049,12 @@
   local.get $11
   local.set $5
   local.get $5
-  i32.const 0
-  i32.ne
   if
    local.get $7
    local.get $5
    call $std/array/Ref#toString
    local.tee $11
-   call $~lib/string/String.__concat
+   call $~lib/string/String._add
    local.tee $4
    local.tee $9
    local.get $7
@@ -15207,8 +15155,6 @@
    local.get $4
    local.set $5
    local.get $5
-   i32.const 0
-   i32.ne
    if (result i32)
     local.get $5
     call $std/array/Ref#toString
@@ -15257,14 +15203,12 @@
     local.get $9
     local.set $5
     local.get $5
-    i32.const 0
-    i32.ne
     if
      local.get $7
      local.get $5
      call $std/array/Ref#toString
      local.tee $9
-     call $~lib/string/String.__concat
+     call $~lib/string/String._add
      local.tee $10
      local.tee $11
      local.get $7
@@ -15288,7 +15232,7 @@
     if
      local.get $7
      local.get $2
-     call $~lib/string/String.__concat
+     call $~lib/string/String._add
      local.tee $10
      local.tee $12
      local.get $7
@@ -15333,14 +15277,12 @@
   local.get $11
   local.set $5
   local.get $5
-  i32.const 0
-  i32.ne
   if
    local.get $7
    local.get $5
    call $std/array/Ref#toString
    local.tee $11
-   call $~lib/string/String.__concat
+   call $~lib/string/String._add
    local.tee $4
    local.tee $9
    local.get $7
@@ -16798,8 +16740,6 @@
    local.get $4
    local.set $5
    local.get $5
-   i32.const 0
-   i32.ne
    if (result i32)
     local.get $5
     call $~lib/array/Array<i32>#toString
@@ -16848,14 +16788,12 @@
     local.get $9
     local.set $5
     local.get $5
-    i32.const 0
-    i32.ne
     if
      local.get $7
      local.get $5
      call $~lib/array/Array<i32>#toString
      local.tee $9
-     call $~lib/string/String.__concat
+     call $~lib/string/String._add
      local.tee $10
      local.tee $11
      local.get $7
@@ -16879,7 +16817,7 @@
     if
      local.get $7
      local.get $2
-     call $~lib/string/String.__concat
+     call $~lib/string/String._add
      local.tee $10
      local.tee $12
      local.get $7
@@ -16924,14 +16862,12 @@
   local.get $11
   local.set $5
   local.get $5
-  i32.const 0
-  i32.ne
   if
    local.get $7
    local.get $5
    call $~lib/array/Array<i32>#toString
    local.tee $11
-   call $~lib/string/String.__concat
+   call $~lib/string/String._add
    local.tee $4
    local.tee $9
    local.get $7
@@ -17268,8 +17204,6 @@
    local.get $4
    local.set $5
    local.get $5
-   i32.const 0
-   i32.ne
    if (result i32)
     local.get $5
     call $~lib/array/Array<u8>#toString
@@ -17318,14 +17252,12 @@
     local.get $9
     local.set $5
     local.get $5
-    i32.const 0
-    i32.ne
     if
      local.get $7
      local.get $5
      call $~lib/array/Array<u8>#toString
      local.tee $9
-     call $~lib/string/String.__concat
+     call $~lib/string/String._add
      local.tee $10
      local.tee $11
      local.get $7
@@ -17349,7 +17281,7 @@
     if
      local.get $7
      local.get $2
-     call $~lib/string/String.__concat
+     call $~lib/string/String._add
      local.tee $10
      local.tee $12
      local.get $7
@@ -17394,14 +17326,12 @@
   local.get $11
   local.set $5
   local.get $5
-  i32.const 0
-  i32.ne
   if
    local.get $7
    local.get $5
    call $~lib/array/Array<u8>#toString
    local.tee $11
-   call $~lib/string/String.__concat
+   call $~lib/string/String._add
    local.tee $4
    local.tee $9
    local.get $7
@@ -17512,8 +17442,6 @@
    local.get $4
    local.set $5
    local.get $5
-   i32.const 0
-   i32.ne
    if (result i32)
     local.get $5
     call $~lib/array/Array<u32>#toString
@@ -17562,14 +17490,12 @@
     local.get $9
     local.set $5
     local.get $5
-    i32.const 0
-    i32.ne
     if
      local.get $7
      local.get $5
      call $~lib/array/Array<u32>#toString
      local.tee $9
-     call $~lib/string/String.__concat
+     call $~lib/string/String._add
      local.tee $10
      local.tee $11
      local.get $7
@@ -17593,7 +17519,7 @@
     if
      local.get $7
      local.get $2
-     call $~lib/string/String.__concat
+     call $~lib/string/String._add
      local.tee $10
      local.tee $12
      local.get $7
@@ -17638,14 +17564,12 @@
   local.get $11
   local.set $5
   local.get $5
-  i32.const 0
-  i32.ne
   if
    local.get $7
    local.get $5
    call $~lib/array/Array<u32>#toString
    local.tee $11
-   call $~lib/string/String.__concat
+   call $~lib/string/String._add
    local.tee $4
    local.tee $9
    local.get $7
@@ -17751,8 +17675,6 @@
    local.get $4
    local.set $5
    local.get $5
-   i32.const 0
-   i32.ne
    if (result i32)
     local.get $5
     call $~lib/array/Array<~lib/array/Array<u32>>#toString
@@ -17801,14 +17723,12 @@
     local.get $9
     local.set $5
     local.get $5
-    i32.const 0
-    i32.ne
     if
      local.get $7
      local.get $5
      call $~lib/array/Array<~lib/array/Array<u32>>#toString
      local.tee $9
-     call $~lib/string/String.__concat
+     call $~lib/string/String._add
      local.tee $10
      local.tee $11
      local.get $7
@@ -17832,7 +17752,7 @@
     if
      local.get $7
      local.get $2
-     call $~lib/string/String.__concat
+     call $~lib/string/String._add
      local.tee $10
      local.tee $12
      local.get $7
@@ -17877,14 +17797,12 @@
   local.get $11
   local.set $5
   local.get $5
-  i32.const 0
-  i32.ne
   if
    local.get $7
    local.get $5
    call $~lib/array/Array<~lib/array/Array<u32>>#toString
    local.tee $11
-   call $~lib/string/String.__concat
+   call $~lib/string/String._add
    local.tee $4
    local.tee $9
    local.get $7
@@ -23184,7 +23102,7 @@
   call $~lib/array/Array<bool>#join
   local.tee $29
   i32.const 5328
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -23205,7 +23123,7 @@
   call $~lib/array/Array<i32>#join
   local.tee $31
   i32.const 5856
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -23226,7 +23144,7 @@
   call $~lib/array/Array<u32>#join
   local.tee $36
   i32.const 5856
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -23247,7 +23165,7 @@
   call $~lib/array/Array<i32>#join
   local.tee $54
   i32.const 6016
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -23268,7 +23186,7 @@
   call $~lib/array/Array<f64>#join
   local.tee $39
   i32.const 7296
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -23289,7 +23207,7 @@
   call $~lib/array/Array<~lib/string/String | null>#join
   local.tee $38
   i32.const 7392
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -23330,7 +23248,7 @@
   call $~lib/array/Array<std/array/Ref | null>#join
   local.tee $43
   i32.const 7504
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -23367,7 +23285,7 @@
   call $~lib/array/Array<std/array/Ref>#join
   local.tee $44
   i32.const 7584
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -23441,7 +23359,7 @@
   call $~lib/array/Array<i32>#toString
   local.tee $44
   i32.const 5056
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -23455,7 +23373,7 @@
   call $~lib/array/Array<i32>#toString
   local.tee $42
   i32.const 7392
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -23469,7 +23387,7 @@
   call $~lib/array/Array<i32>#toString
   local.tee $39
   i32.const 7776
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -23483,7 +23401,7 @@
   call $~lib/array/Array<i32>#toString
   local.tee $40
   i32.const 7808
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -23503,7 +23421,7 @@
   call $~lib/array/Array<i8>#toString
   local.tee $54
   i32.const 7872
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -23523,7 +23441,7 @@
   call $~lib/array/Array<u16>#toString
   local.tee $36
   i32.const 7936
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -23543,7 +23461,7 @@
   call $~lib/array/Array<u64>#toString
   local.tee $31
   i32.const 8032
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -23563,7 +23481,7 @@
   call $~lib/array/Array<i64>#toString
   local.tee $29
   i32.const 8144
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -23584,7 +23502,7 @@
   call $~lib/array/Array<~lib/string/String | null>#toString
   local.tee $48
   i32.const 8304
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -23604,7 +23522,7 @@
   call $~lib/array/Array<~lib/string/String | null>#toString
   local.tee $51
   i32.const 8448
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -23646,7 +23564,7 @@
   call $~lib/array/Array<~lib/array/Array<i32>>#toString
   local.tee $30
   i32.const 8544
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -23688,7 +23606,7 @@
   call $~lib/array/Array<~lib/array/Array<u8>>#toString
   local.tee $26
   i32.const 8544
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -23735,7 +23653,7 @@
   call $~lib/array/Array<~lib/array/Array<~lib/array/Array<u32>>>#toString
   local.tee $28
   i32.const 7392
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0

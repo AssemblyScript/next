@@ -163,6 +163,7 @@ import {
   TernaryExpression,
   ArrayLiteralExpression,
   StringLiteralExpression,
+  UnaryExpression,
   UnaryPostfixExpression,
   UnaryPrefixExpression,
 
@@ -1119,8 +1120,15 @@ export class Compiler extends DiagnosticEmitter {
 
     // Initialize to zero if there's no initializer
     } else {
+      let globalType = global.type;
+      if (globalType.is(TypeFlags.REFERENCE) && !globalType.is(TypeFlags.NULLABLE)) {
+        this.error(
+          DiagnosticCode.Object_is_possibly_null,
+          global.identifierNode.range
+        );
+      }
       if (global.is(CommonFlags.INLINED)) {
-        initExpr = this.compileInlineConstant(global, global.type, Constraints.PREFER_STATIC | Constraints.WILL_RETAIN);
+        initExpr = this.compileInlineConstant(global, globalType, Constraints.PREFER_STATIC | Constraints.WILL_RETAIN);
       } else {
         initExpr = this.makeZero(type);
       }
@@ -1309,10 +1317,12 @@ export class Compiler extends DiagnosticEmitter {
       let thisType = signature.thisType;
       if (thisType) {
         // No need to retain `this` as it can't be reassigned and thus can't become prematurely released
+        flow.setLocalFlag(index, LocalFlags.INITIALIZED);
         ++index;
       }
       let parameterTypes = signature.parameterTypes;
       for (let i = 0, k = parameterTypes.length; i < k; ++i, ++index) {
+        flow.setLocalFlag(index, LocalFlags.INITIALIZED);
         let type = parameterTypes[i];
         if (type.isManaged) {
           stmts.push(
@@ -3014,6 +3024,7 @@ export class Compiler extends DiagnosticEmitter {
         }
         let isManaged = type.isManaged;
         if (initExpr) {
+          flow.setLocalFlag(local.index, LocalFlags.INITIALIZED);
           if (flow.isNonnull(initExpr, type)) flow.setLocalFlag(local.index, LocalFlags.NONNULL);
           if (isManaged) {
             flow.setLocalFlag(local.index, LocalFlags.RETAINED);
@@ -3759,7 +3770,7 @@ export class Compiler extends DiagnosticEmitter {
           if (classReference) {
             let overload = classReference.lookupOverload(OperatorKind.LT);
             if (overload) {
-              expr = this.compileBinaryOverload(overload, left, leftExpr, right, expression);
+              expr = this.compileBinaryOverload(overload, leftExpr, leftType, right, expression);
               break;
             }
           }
@@ -3859,7 +3870,7 @@ export class Compiler extends DiagnosticEmitter {
           if (classReference) {
             let overload = classReference.lookupOverload(OperatorKind.GT);
             if (overload) {
-              expr = this.compileBinaryOverload(overload, left, leftExpr, right, expression);
+              expr = this.compileBinaryOverload(overload, leftExpr, leftType, right, expression);
               break;
             }
           }
@@ -3962,7 +3973,7 @@ export class Compiler extends DiagnosticEmitter {
           if (classReference) {
             let overload = classReference.lookupOverload(OperatorKind.LE);
             if (overload) {
-              expr = this.compileBinaryOverload(overload, left, leftExpr, right, expression);
+              expr = this.compileBinaryOverload(overload, leftExpr, leftType, right, expression);
               break;
             }
           }
@@ -4062,7 +4073,7 @@ export class Compiler extends DiagnosticEmitter {
           if (classReference) {
             let overload = classReference.lookupOverload(OperatorKind.GE);
             if (overload) {
-              expr = this.compileBinaryOverload(overload, left, leftExpr, right, expression);
+              expr = this.compileBinaryOverload(overload, leftExpr, leftType, right, expression);
               break;
             }
           }
@@ -4163,13 +4174,13 @@ export class Compiler extends DiagnosticEmitter {
         leftExpr = this.compileExpression(left, contextualType);
         leftType = this.currentType;
 
-         // check operator overload
-        if (operator == Token.EQUALS_EQUALS && this.currentType.is(TypeFlags.REFERENCE)) {
+        // check operator overload (cannot overload explicit null comparison)
+        if (this.currentType.is(TypeFlags.REFERENCE)) {
           let classReference = leftType.classReference;
           if (classReference) {
             let overload = classReference.lookupOverload(OperatorKind.EQ);
             if (overload) {
-              expr = this.compileBinaryOverload(overload, left, leftExpr, right, expression);
+              expr = this.compileBinaryOverloadWithNullChecking(overload, true, leftExpr, leftType, right, expression);
               break;
             }
           }
@@ -4263,13 +4274,13 @@ export class Compiler extends DiagnosticEmitter {
         leftExpr = this.compileExpression(left, contextualType);
         leftType = this.currentType;
 
-         // check operator overload
-        if (operator == Token.EXCLAMATION_EQUALS && this.currentType.is(TypeFlags.REFERENCE)) {
+        // check operator overload (cannot overload explicit null comparison)
+        if (this.currentType.is(TypeFlags.REFERENCE)) {
           let classReference = leftType.classReference;
           if (classReference) {
             let overload = classReference.lookupOverload(OperatorKind.NE);
             if (overload) {
-              expr = this.compileBinaryOverload(overload, left, leftExpr, right, expression);
+              expr = this.compileBinaryOverloadWithNullChecking(overload, false, leftExpr, leftType, right, expression);
               break;
             }
           }
@@ -4372,7 +4383,7 @@ export class Compiler extends DiagnosticEmitter {
           if (classReference) {
             let overload = classReference.lookupOverload(OperatorKind.ADD);
             if (overload) {
-              expr = this.compileBinaryOverload(overload, left, leftExpr, right, expression);
+              expr = this.compileBinaryOverload(overload, leftExpr, leftType, right, expression);
               break;
             }
           }
@@ -4461,7 +4472,7 @@ export class Compiler extends DiagnosticEmitter {
           if (classReference) {
             let overload = classReference.lookupOverload(OperatorKind.SUB);
             if (overload) {
-              expr = this.compileBinaryOverload(overload, left, leftExpr, right, expression);
+              expr = this.compileBinaryOverload(overload, leftExpr, leftType, right, expression);
               break;
             }
           }
@@ -4554,7 +4565,7 @@ export class Compiler extends DiagnosticEmitter {
           if (classReference) {
             let overload = classReference.lookupOverload(OperatorKind.MUL);
             if (overload) {
-              expr = this.compileBinaryOverload(overload, left, leftExpr, right, expression);
+              expr = this.compileBinaryOverload(overload, leftExpr, leftType, right, expression);
               break;
             }
           }
@@ -4647,7 +4658,7 @@ export class Compiler extends DiagnosticEmitter {
           if (classReference) {
             let overload = classReference.lookupOverload(OperatorKind.POW);
             if (overload) {
-              expr = this.compileBinaryOverload(overload, left, leftExpr, right, expression);
+              expr = this.compileBinaryOverload(overload, leftExpr, leftType, right, expression);
               break;
             }
           }
@@ -4746,7 +4757,7 @@ export class Compiler extends DiagnosticEmitter {
           if (classReference) {
             let overload = classReference.lookupOverload(OperatorKind.DIV);
             if (overload) {
-              expr = this.compileBinaryOverload(overload, left, leftExpr, right, expression);
+              expr = this.compileBinaryOverload(overload, leftExpr, leftType, right, expression);
               break;
             }
           }
@@ -4858,7 +4869,7 @@ export class Compiler extends DiagnosticEmitter {
           if (classReference) {
             let overload = classReference.lookupOverload(OperatorKind.REM);
             if (overload) {
-              expr = this.compileBinaryOverload(overload, left, leftExpr, right, expression);
+              expr = this.compileBinaryOverload(overload, leftExpr, leftType, right, expression);
               break;
             }
           }
@@ -5027,7 +5038,7 @@ export class Compiler extends DiagnosticEmitter {
           if (classReference) {
             let overload = classReference.lookupOverload(OperatorKind.BITWISE_SHL);
             if (overload) {
-              expr = this.compileBinaryOverload(overload, left, leftExpr, right, expression);
+              expr = this.compileBinaryOverload(overload, leftExpr, leftType, right, expression);
               break;
             }
           }
@@ -5093,7 +5104,7 @@ export class Compiler extends DiagnosticEmitter {
           if (classReference) {
             let overload = classReference.lookupOverload(OperatorKind.BITWISE_SHR);
             if (overload) {
-              expr = this.compileBinaryOverload(overload, left, leftExpr, right, expression);
+              expr = this.compileBinaryOverload(overload, leftExpr, leftType, right, expression);
               break;
             }
           }
@@ -5181,7 +5192,7 @@ export class Compiler extends DiagnosticEmitter {
           if (classReference) {
             let overload = classReference.lookupOverload(OperatorKind.BITWISE_SHR_U);
             if (overload) {
-              expr = this.compileBinaryOverload(overload, left, leftExpr, right, expression);
+              expr = this.compileBinaryOverload(overload, leftExpr, leftType, right, expression);
               break;
             }
           }
@@ -5250,7 +5261,7 @@ export class Compiler extends DiagnosticEmitter {
           if (classReference) {
             let overload = classReference.lookupOverload(OperatorKind.BITWISE_AND);
             if (overload) {
-              expr = this.compileBinaryOverload(overload, left, leftExpr, right, expression);
+              expr = this.compileBinaryOverload(overload, leftExpr, leftType, right, expression);
               break;
             }
           }
@@ -5340,7 +5351,7 @@ export class Compiler extends DiagnosticEmitter {
           if (classReference) {
             let overload = classReference.lookupOverload(OperatorKind.BITWISE_OR);
             if (overload) {
-              expr = this.compileBinaryOverload(overload, left, leftExpr, right, expression);
+              expr = this.compileBinaryOverload(overload, leftExpr, leftType, right, expression);
               break;
             }
           }
@@ -5436,7 +5447,7 @@ export class Compiler extends DiagnosticEmitter {
           if (classReference) {
             let overload = classReference.lookupOverload(OperatorKind.BITWISE_XOR);
             if (overload) {
-              expr = this.compileBinaryOverload(overload, left, leftExpr, right, expression);
+              expr = this.compileBinaryOverload(overload, leftExpr, leftType, right, expression);
               break;
             }
           }
@@ -5760,40 +5771,126 @@ export class Compiler extends DiagnosticEmitter {
   }
 
   private compileUnaryOverload(
-    operatorInstance: Function,
-    value: Expression,
+    /** Overload function instance. */
+    overload: Function,
+    /** Compiled value expression. */
     valueExpr: ExpressionRef,
-    reportNode: Node
+    /** Value type. */
+    valueType: Type,
+    /** Report node. */
+    reportNode: UnaryExpression
   ): ExpressionRef {
-    // FIXME: see comment in compileBinaryOverload below why recompiling on type mismatch
-    // is a bad idea currently. so this assumes that the type matches.
-    return this.makeCallDirect(operatorInstance, [ valueExpr ], reportNode, false);
+    valueExpr = this.convertExpression(valueExpr, valueType, overload.unaryOverloadValueType, false, false, reportNode);
+    return this.makeCallDirect(overload, [ valueExpr ], reportNode, false);
   }
 
   private compileBinaryOverload(
-    operatorInstance: Function,
-    left: Expression,
+    /** Overload function instance. */
+    overload: Function,
+    /** Compiled left expression. */
     leftExpr: ExpressionRef,
+    /** Left expression type. */
+    leftType: Type,
+    /** Right expression to compile. */
     right: Expression,
-    reportNode: Node
+    /** Report node. */
+    reportNode: BinaryExpression
   ): ExpressionRef {
-    var rightType: Type;
-    if (operatorInstance.is(CommonFlags.INSTANCE)) {
-      let classInstance = assert(operatorInstance.parent); assert(classInstance.kind == ElementKind.CLASS);
-      rightType = operatorInstance.signature.parameterTypes[0];
-    } else {
-      // FIXME: if LHS type differs we can't recompile left because that'd completely confuse
-      // local states, like having retained locals that actually do not even exist, possibly
-      // releasing something random in that local before and evil things like that. Hence this
-      // assumes that LHS type matches, which in turn means that static overloads must be
-      // guaranteed to never mismatch LHS type, which in turn means that we can't have shiny
-      // things like multiple static overloads for different combinations of LHS/RHS types.
-      // We might want that at some point of course, but requires to complete the resolver so
-      // it can actually resolve every kind of expression without ever having to recompile.
-      rightType = operatorInstance.signature.parameterTypes[1];
+    leftExpr = this.convertExpression(leftExpr, leftType, overload.binaryOverloadLeftType, false, false, reportNode);
+    var rightExpr = this.compileExpression(right, overload.binaryOverloadRightType, Constraints.CONV_IMPLICIT);
+    return this.makeCallDirect(overload, [ leftExpr, rightExpr ], reportNode);
+  }
+
+  /** Like `compileBinaryOverload`, but with pre-applied null checking. */
+  private compileBinaryOverloadWithNullChecking(
+    /** Overload function instance. */
+    overload: Function,
+    /** Whether the overload returns `true` if both values are identity equal. */
+    ifIdentityEqual: bool,
+    /** Compiled left expression. */
+    leftExpr: ExpressionRef,
+    /** Left expression type. */
+    leftType: Type,
+    /** Right expression to compile. */
+    right: Expression,
+    /** Report node. */
+    reportNode: BinaryExpression
+  ): ExpressionRef {
+    // Dealing with `null`s is left to the compiler and cannot be overloaded.
+    // This serves the purpose that we can emit properly null-checked code.
+    var module = this.module;
+    var flow = this.currentFlow;
+    leftExpr = this.convertExpression(leftExpr, leftType,
+      leftType.is(TypeFlags.NULLABLE)
+        ? overload.binaryOverloadLeftType.asNullable()
+        : overload.binaryOverloadLeftType,
+      false, false, reportNode.left
+    );
+    var rightExpr = this.compileExpression(right, overload.binaryOverloadRightType);
+    var rightType = this.currentType;
+    rightExpr = this.convertExpression(rightExpr, rightType,
+      rightType.is(TypeFlags.NULLABLE)
+        ? overload.binaryOverloadRightType.asNullable()
+        : overload.binaryOverloadRightType,
+      false, false, reportNode.right
+    );
+    var isWasm64 = this.options.isWasm64;
+    if (!flow.isNonnull(leftExpr, leftType)) {
+      if (!flow.isNonnull(rightExpr, rightType)) {
+        let tleft = flow.getTempLocal(leftType);
+        let tright = flow.getTempLocal(rightType);
+        let leftNativeType = leftType.toNativeType();
+        let rightNativeType = rightType.toNativeType();
+        let ret = module.if(
+          // if (EQZ left | EQZ right) ? left EQ right : OVERLOAD
+          module.binary(BinaryOp.OrI32,
+            module.unary(isWasm64 ? UnaryOp.EqzI64 : UnaryOp.EqzI32, module.local_tee(tleft.index, leftExpr)),
+            module.unary(isWasm64 ? UnaryOp.EqzI64 : UnaryOp.EqzI32, module.local_tee(tright.index, rightExpr))
+          ),
+          module.binary(
+            isWasm64
+              ? ifIdentityEqual ? BinaryOp.EqI64 : BinaryOp.NeI64
+              : ifIdentityEqual ? BinaryOp.EqI32 : BinaryOp.NeI32,
+            module.local_get(tleft.index, leftNativeType),
+            module.local_get(tright.index, rightNativeType)
+          ),
+          this.makeCallDirect(overload, [
+            module.local_get(tleft.index, leftNativeType),
+            module.local_get(tright.index, rightNativeType)
+          ], reportNode)
+        );
+        flow.freeTempLocal(tright);
+        flow.freeTempLocal(tleft);
+        return ret;
+      } else {
+        let tleft = flow.getTempLocal(leftType);
+        let ret = module.if(
+          // if (EQZ left) ? false : OVERLOAD
+          module.unary(isWasm64 ? UnaryOp.EqzI64 : UnaryOp.EqzI32, module.local_tee(tleft.index, leftExpr)),
+          module.i32(ifIdentityEqual ? 0 : 1),
+          this.makeCallDirect(overload, [
+            module.local_get(tleft.index, leftType.toNativeType()),
+            rightExpr
+          ], reportNode)
+        );
+        flow.freeTempLocal(tleft);
+        return ret;
+      }
+    } else if (!flow.isNonnull(rightExpr, rightType)) {
+      let tright = flow.getTempLocal(rightType, findUsedLocals(leftExpr));
+      let ret = module.if(
+        // if (EQZ right) ? false : OVERLOAD
+        module.unary(isWasm64 ? UnaryOp.EqzI64 : UnaryOp.EqzI32, module.local_tee(tright.index, rightExpr)),
+        module.i32(ifIdentityEqual ? 0 : 1),
+        this.makeCallDirect(overload, [
+          leftExpr,
+          module.local_get(tright.index, rightType.toNativeType())
+        ], reportNode)
+      );
+      flow.freeTempLocal(tright);
+      return ret;
     }
-    var rightExpr = this.compileExpression(right, rightType, Constraints.CONV_IMPLICIT);
-    return this.makeCallDirect(operatorInstance, [ leftExpr, rightExpr ], reportNode);
+    return this.makeCallDirect(overload, [ leftExpr, rightExpr ], reportNode);
   }
 
   private compileAssignment(expression: Expression, valueExpression: Expression, contextualType: Type): ExpressionRef {
@@ -6797,6 +6894,7 @@ export class Compiler extends DiagnosticEmitter {
         if (!this.skippedAutoreleases.has(paramExpr)) paramExpr = this.makeRetain(paramExpr);
         flow.setLocalFlag(argumentLocal.index, LocalFlags.RETAINED);
       }
+      flow.setLocalFlag(argumentLocal.index, LocalFlags.INITIALIZED);
       body.unshift(
         module.local_set(argumentLocal.index, paramExpr)
       );
@@ -6808,6 +6906,7 @@ export class Compiler extends DiagnosticEmitter {
       let thisType = assert(instance.signature.thisType);
       let thisLocal = flow.addScopedLocal(CommonNames.this_, thisType, usedLocals);
       // No need to retain `this` as it can't be reassigned and thus can't become prematurely released
+      flow.setLocalFlag(thisLocal.index, LocalFlags.INITIALIZED);
       body.unshift(
         module.local_set(thisLocal.index, thisArg)
       );
@@ -9162,7 +9261,7 @@ export class Compiler extends DiagnosticEmitter {
                 flow.freeTempLocal(tempLocal);
                 tempLocal = null;
               }
-              expr = this.compileUnaryOverload(overload, expression.operand, getValue, expression);
+              expr = this.compileUnaryOverload(overload, getValue, this.currentType, expression);
               if (isInstance) break;
               return expr; // here
             }
@@ -9251,7 +9350,7 @@ export class Compiler extends DiagnosticEmitter {
                 flow.freeTempLocal(tempLocal);
                 tempLocal = null;
               }
-              expr = this.compileUnaryOverload(overload, expression.operand, getValue, expression);
+              expr = this.compileUnaryOverload(overload, getValue, this.currentType, expression);
               if (overload.is(CommonFlags.INSTANCE)) break;
               return expr; // here
             }
@@ -9395,7 +9494,7 @@ export class Compiler extends DiagnosticEmitter {
           let classReference = this.currentType.classReference;
           if (classReference) {
             let overload = classReference.lookupOverload(OperatorKind.PLUS);
-            if (overload) return this.compileUnaryOverload(overload, expression.operand, expr, expression);
+            if (overload) return this.compileUnaryOverload(overload, expr, this.currentType, expression);
           }
           this.error(
             DiagnosticCode.The_0_operator_cannot_be_applied_to_type_1,
@@ -9428,7 +9527,7 @@ export class Compiler extends DiagnosticEmitter {
           let classReference = this.currentType.classReference;
           if (classReference) {
             let overload = classReference.lookupOverload(OperatorKind.MINUS);
-            if (overload) return this.compileUnaryOverload(overload, expression.operand, expr, expression);
+            if (overload) return this.compileUnaryOverload(overload, expr, this.currentType, expression);
           }
           this.error(
             DiagnosticCode.The_0_operator_cannot_be_applied_to_type_1,
@@ -9496,7 +9595,7 @@ export class Compiler extends DiagnosticEmitter {
           if (classReference) {
             let overload = classReference.lookupOverload(OperatorKind.PREFIX_INC);
             if (overload) {
-              expr = this.compileUnaryOverload(overload, expression.operand, expr, expression);
+              expr = this.compileUnaryOverload(overload, expr, this.currentType, expression);
               if (overload.is(CommonFlags.INSTANCE)) break; // re-assign
               return expr; // skip re-assign
             }
@@ -9567,7 +9666,7 @@ export class Compiler extends DiagnosticEmitter {
           if (classReference) {
             let overload = classReference.lookupOverload(OperatorKind.PREFIX_DEC);
             if (overload) {
-              expr = this.compileUnaryOverload(overload, expression.operand, expr, expression);
+              expr = this.compileUnaryOverload(overload, expr, this.currentType, expression);
               if (overload.is(CommonFlags.INSTANCE)) break; // re-assign
               return expr; // skip re-assign
             }
@@ -9636,7 +9735,7 @@ export class Compiler extends DiagnosticEmitter {
           let classReference = this.currentType.classReference;
           if (classReference) {
             let overload = classReference.lookupOverload(OperatorKind.NOT);
-            if (overload) return this.compileUnaryOverload(overload, expression.operand, expr, expression);
+            if (overload) return this.compileUnaryOverload(overload, expr, this.currentType, expression);
           }
           // allow '!' for references even without an overload
         }
@@ -9661,7 +9760,7 @@ export class Compiler extends DiagnosticEmitter {
           let classReference = this.currentType.classReference;
           if (classReference) {
             let overload = classReference.lookupOverload(OperatorKind.BITWISE_NOT);
-            if (overload) return this.compileUnaryOverload(overload, expression.operand, expr, expression);
+            if (overload) return this.compileUnaryOverload(overload, expr, this.currentType, expression);
           }
           this.error(
             DiagnosticCode.The_0_operator_cannot_be_applied_to_type_1,

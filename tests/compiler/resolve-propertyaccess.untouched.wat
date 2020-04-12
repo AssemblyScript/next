@@ -405,16 +405,16 @@
   local.get $0
   call $~lib/util/number/itoa<i32>
  )
- (func $~lib/rt/stub/__release (; 9 ;) (param $0 i32)
-  nop
- )
- (func $~lib/string/String#get:length (; 10 ;) (param $0 i32) (result i32)
+ (func $~lib/string/String#get:length (; 9 ;) (param $0 i32) (result i32)
   local.get $0
   i32.const 16
   i32.sub
   i32.load offset=12
   i32.const 1
   i32.shr_u
+ )
+ (func $~lib/rt/stub/__release (; 10 ;) (param $0 i32)
+  nop
  )
  (func $~lib/util/string/compareImpl (; 11 ;) (param $0 i32) (param $1 i32) (param $2 i32) (param $3 i32) (param $4 i32) (result i32)
   (local $5 i32)
@@ -538,78 +538,38 @@
   call $~lib/rt/stub/__release
   local.get $7
  )
- (func $~lib/string/String.__eq (; 12 ;) (param $0 i32) (param $1 i32) (result i32)
+ (func $~lib/string/String#_eq (; 12 ;) (param $0 i32) (param $1 i32) (result i32)
   (local $2 i32)
   (local $3 i32)
-  local.get $0
-  call $~lib/rt/stub/__retain
-  local.set $0
   local.get $1
   call $~lib/rt/stub/__retain
   local.set $1
   local.get $0
-  local.get $1
-  i32.eq
-  if
-   i32.const 1
-   local.set $2
-   local.get $0
-   call $~lib/rt/stub/__release
-   local.get $1
-   call $~lib/rt/stub/__release
-   local.get $2
-   return
-  end
-  local.get $0
-  i32.const 0
-  i32.eq
-  if (result i32)
-   i32.const 1
-  else
-   local.get $1
-   i32.const 0
-   i32.eq
-  end
-  if
-   i32.const 0
-   local.set $2
-   local.get $0
-   call $~lib/rt/stub/__release
-   local.get $1
-   call $~lib/rt/stub/__release
-   local.get $2
-   return
-  end
-  local.get $0
   call $~lib/string/String#get:length
-  local.set $3
-  local.get $3
+  local.set $2
+  local.get $2
   local.get $1
   call $~lib/string/String#get:length
   i32.ne
   if
    i32.const 0
-   local.set $2
-   local.get $0
-   call $~lib/rt/stub/__release
+   local.set $3
    local.get $1
    call $~lib/rt/stub/__release
-   local.get $2
+   local.get $3
    return
   end
   local.get $0
   i32.const 0
   local.get $1
   i32.const 0
-  local.get $3
+  local.get $2
   call $~lib/util/string/compareImpl
   i32.eqz
-  local.set $2
-  local.get $0
-  call $~lib/rt/stub/__release
+  local.set $3
   local.get $1
   call $~lib/rt/stub/__release
-  local.get $2
+  local.get $3
  )
  (func $resolve-propertyaccess/Class#constructor (; 13 ;) (param $0 i32) (result i32)
   local.get $0
@@ -652,7 +612,7 @@
   call $~lib/number/I32#toString
   local.tee $0
   i32.const 480
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -666,7 +626,7 @@
   call $~lib/number/I32#toString
   local.tee $1
   i32.const 592
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -680,7 +640,7 @@
   call $~lib/number/I32#toString
   local.tee $2
   i32.const 624
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -694,7 +654,7 @@
   call $~lib/number/I32#toString
   local.tee $3
   i32.const 656
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -708,7 +668,7 @@
   call $~lib/number/I32#toString
   local.tee $4
   i32.const 688
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -722,7 +682,7 @@
   call $~lib/number/I32#toString
   local.tee $5
   i32.const 720
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -736,7 +696,7 @@
   call $~lib/number/I32#toString
   local.tee $6
   i32.const 752
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -750,7 +710,7 @@
   call $~lib/number/I32#toString
   local.tee $7
   i32.const 784
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -764,7 +724,7 @@
   call $~lib/number/I32#toString
   local.tee $8
   i32.const 816
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -782,7 +742,7 @@
   call $~lib/number/I32#toString
   local.tee $10
   i32.const 848
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0

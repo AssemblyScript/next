@@ -77,16 +77,16 @@
  (func $~lib/rt/stub/__retain (; 5 ;) (param $0 i32) (result i32)
   local.get $0
  )
- (func $~lib/rt/stub/__release (; 6 ;) (param $0 i32)
-  nop
- )
- (func $~lib/string/String#get:length (; 7 ;) (param $0 i32) (result i32)
+ (func $~lib/string/String#get:length (; 6 ;) (param $0 i32) (result i32)
   local.get $0
   i32.const 16
   i32.sub
   i32.load offset=12
   i32.const 1
   i32.shr_u
+ )
+ (func $~lib/rt/stub/__release (; 7 ;) (param $0 i32)
+  nop
  )
  (func $~lib/util/string/compareImpl (; 8 ;) (param $0 i32) (param $1 i32) (param $2 i32) (param $3 i32) (param $4 i32) (result i32)
   (local $5 i32)
@@ -210,78 +210,38 @@
   call $~lib/rt/stub/__release
   local.get $7
  )
- (func $~lib/string/String.__eq (; 9 ;) (param $0 i32) (param $1 i32) (result i32)
+ (func $~lib/string/String#_eq (; 9 ;) (param $0 i32) (param $1 i32) (result i32)
   (local $2 i32)
   (local $3 i32)
-  local.get $0
-  call $~lib/rt/stub/__retain
-  local.set $0
   local.get $1
   call $~lib/rt/stub/__retain
   local.set $1
   local.get $0
-  local.get $1
-  i32.eq
-  if
-   i32.const 1
-   local.set $2
-   local.get $0
-   call $~lib/rt/stub/__release
-   local.get $1
-   call $~lib/rt/stub/__release
-   local.get $2
-   return
-  end
-  local.get $0
-  i32.const 0
-  i32.eq
-  if (result i32)
-   i32.const 1
-  else
-   local.get $1
-   i32.const 0
-   i32.eq
-  end
-  if
-   i32.const 0
-   local.set $2
-   local.get $0
-   call $~lib/rt/stub/__release
-   local.get $1
-   call $~lib/rt/stub/__release
-   local.get $2
-   return
-  end
-  local.get $0
   call $~lib/string/String#get:length
-  local.set $3
-  local.get $3
+  local.set $2
+  local.get $2
   local.get $1
   call $~lib/string/String#get:length
   i32.ne
   if
    i32.const 0
-   local.set $2
-   local.get $0
-   call $~lib/rt/stub/__release
+   local.set $3
    local.get $1
    call $~lib/rt/stub/__release
-   local.get $2
+   local.get $3
    return
   end
   local.get $0
   i32.const 0
   local.get $1
   i32.const 0
-  local.get $3
+  local.get $2
   call $~lib/util/string/compareImpl
   i32.eqz
-  local.set $2
-  local.get $0
-  call $~lib/rt/stub/__release
+  local.set $3
   local.get $1
   call $~lib/rt/stub/__release
-  local.get $2
+  local.get $3
  )
  (func $~lib/object/Object.is<~lib/string/String> (; 10 ;) (param $0 i32) (param $1 i32) (result i32)
   (local $2 i32)
@@ -293,7 +253,7 @@
   local.set $1
   local.get $0
   local.get $1
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   local.set $2
   local.get $0
   call $~lib/rt/stub/__release
@@ -303,6 +263,7 @@
  )
  (func $~lib/object/Object.is<~lib/string/String | null> (; 11 ;) (param $0 i32) (param $1 i32) (result i32)
   (local $2 i32)
+  (local $3 i32)
   local.get $0
   call $~lib/rt/stub/__retain
   local.set $0
@@ -310,8 +271,21 @@
   call $~lib/rt/stub/__retain
   local.set $1
   local.get $0
+  local.tee $2
+  i32.eqz
   local.get $1
-  call $~lib/string/String.__eq
+  local.tee $3
+  i32.eqz
+  i32.or
+  if (result i32)
+   local.get $2
+   local.get $3
+   i32.eq
+  else
+   local.get $2
+   local.get $3
+   call $~lib/string/String#_eq
+  end
   local.set $2
   local.get $0
   call $~lib/rt/stub/__release

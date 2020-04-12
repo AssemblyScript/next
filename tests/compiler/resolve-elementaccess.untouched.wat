@@ -3547,78 +3547,38 @@
   call $~lib/rt/stub/__release
   local.get $7
  )
- (func $~lib/string/String.__eq (; 23 ;) (param $0 i32) (param $1 i32) (result i32)
+ (func $~lib/string/String#_eq (; 23 ;) (param $0 i32) (param $1 i32) (result i32)
   (local $2 i32)
   (local $3 i32)
-  local.get $0
-  call $~lib/rt/stub/__retain
-  local.set $0
   local.get $1
   call $~lib/rt/stub/__retain
   local.set $1
   local.get $0
-  local.get $1
-  i32.eq
-  if
-   i32.const 1
-   local.set $2
-   local.get $0
-   call $~lib/rt/stub/__release
-   local.get $1
-   call $~lib/rt/stub/__release
-   local.get $2
-   return
-  end
-  local.get $0
-  i32.const 0
-  i32.eq
-  if (result i32)
-   i32.const 1
-  else
-   local.get $1
-   i32.const 0
-   i32.eq
-  end
-  if
-   i32.const 0
-   local.set $2
-   local.get $0
-   call $~lib/rt/stub/__release
-   local.get $1
-   call $~lib/rt/stub/__release
-   local.get $2
-   return
-  end
-  local.get $0
   call $~lib/string/String#get:length
-  local.set $3
-  local.get $3
+  local.set $2
+  local.get $2
   local.get $1
   call $~lib/string/String#get:length
   i32.ne
   if
    i32.const 0
-   local.set $2
-   local.get $0
-   call $~lib/rt/stub/__release
+   local.set $3
    local.get $1
    call $~lib/rt/stub/__release
-   local.get $2
+   local.get $3
    return
   end
   local.get $0
   i32.const 0
   local.get $1
   i32.const 0
-  local.get $3
+  local.get $2
   call $~lib/util/string/compareImpl
   i32.eqz
-  local.set $2
-  local.get $0
-  call $~lib/rt/stub/__release
+  local.set $3
   local.get $1
   call $~lib/rt/stub/__release
-  local.get $2
+  local.get $3
  )
  (func $~lib/typedarray/Uint8Array#constructor (; 24 ;) (param $0 i32) (param $1 i32) (result i32)
   local.get $0
@@ -3771,7 +3731,7 @@
   call $~lib/number/F32#toString
   local.tee $0
   i32.const 1872
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -3787,7 +3747,7 @@
   call $~lib/number/F32#toString
   local.tee $1
   i32.const 1968
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -3813,7 +3773,7 @@
   call $~lib/number/F32#toString
   local.tee $2
   i32.const 2000
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -3863,7 +3823,7 @@
   call $~lib/number/U8#toString
   local.tee $3
   i32.const 2064
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -3879,7 +3839,7 @@
   call $~lib/number/U8#toString
   local.tee $2
   i32.const 2096
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -3905,7 +3865,7 @@
   call $~lib/number/U8#toString
   local.tee $4
   i32.const 2128
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0

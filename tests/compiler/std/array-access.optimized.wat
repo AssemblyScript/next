@@ -9,7 +9,6 @@
  (data (i32.const 1088) "\1a\00\00\00\01\00\00\00\01\00\00\00\1a\00\00\00~\00l\00i\00b\00/\00a\00r\00r\00a\00y\00.\00t\00s")
  (data (i32.const 1136) "^\00\00\00\01\00\00\00\01\00\00\00^\00\00\00E\00l\00e\00m\00e\00n\00t\00 \00t\00y\00p\00e\00 \00m\00u\00s\00t\00 \00b\00e\00 \00n\00u\00l\00l\00a\00b\00l\00e\00 \00i\00f\00 \00a\00r\00r\00a\00y\00 \00i\00s\00 \00h\00o\00l\00e\00y")
  (data (i32.const 1252) "\01\00\00\00\01")
- (data (i32.const 1264) "\08\00\00\00\01\00\00\00\01\00\00\00\08\00\00\00n\00u\00l\00l")
  (export "memory" (memory $0))
  (export "i32ArrayArrayElementAccess" (func $std/array-access/i32ArrayArrayElementAccess))
  (export "stringArrayPropertyAccess" (func $std/array-access/stringArrayPropertyAccess))
@@ -24,7 +23,7 @@
   if
    i32.const 1040
    i32.const 1104
-   i32.const 104
+   i32.const 107
    i32.const 42
    call $~lib/builtins/abort
    unreachable
@@ -41,7 +40,7 @@
   if
    i32.const 1152
    i32.const 1104
-   i32.const 108
+   i32.const 111
    i32.const 40
    call $~lib/builtins/abort
    unreachable
@@ -59,7 +58,7 @@
   if
    i32.const 1040
    i32.const 1104
-   i32.const 104
+   i32.const 107
    i32.const 42
    call $~lib/builtins/abort
    unreachable

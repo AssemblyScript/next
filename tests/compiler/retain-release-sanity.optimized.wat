@@ -1696,68 +1696,49 @@
   i32.const 1
   i32.shr_u
  )
- (func $~lib/string/String.__concat (; 25 ;) (param $0 i32) (param $1 i32) (result i32)
+ (func $~lib/string/String._add (; 25 ;) (param $0 i32) (param $1 i32) (result i32)
   (local $2 i32)
   (local $3 i32)
   (local $4 i32)
-  block $__inlined_func$~lib/string/String#concat (result i32)
+  block $__inlined_func$~lib/string/String#concat
    local.get $0
    i32.const 1424
    local.get $0
    select
-   local.set $2
-   local.get $1
-   call $~lib/rt/pure/__retain
-   local.tee $0
-   i32.eqz
-   if
-    local.get $0
-    i32.const 1424
-    i32.ne
-    if
-     local.get $0
-     call $~lib/rt/pure/__release
-    end
-    i32.const 1424
-    local.set $0
-   end
-   local.get $2
+   local.tee $3
    call $~lib/string/String#get:length
    i32.const 1
    i32.shl
-   local.tee $3
-   local.get $0
+   local.tee $2
+   local.get $1
    call $~lib/string/String#get:length
    i32.const 1
    i32.shl
    local.tee $4
    i32.add
-   local.tee $1
+   local.tee $0
    i32.eqz
    if
-    local.get $0
-    call $~lib/rt/pure/__release
     i32.const 1344
+    local.set $0
     br $__inlined_func$~lib/string/String#concat
    end
-   local.get $1
+   local.get $0
    i32.const 1
    call $~lib/rt/tlsf/__alloc
    call $~lib/rt/pure/__retain
-   local.tee $1
+   local.tee $0
+   local.get $3
    local.get $2
-   local.get $3
    call $~lib/memory/memory.copy
-   local.get $1
-   local.get $3
-   i32.add
    local.get $0
+   local.get $2
+   i32.add
+   local.get $1
    local.get $4
    call $~lib/memory/memory.copy
-   local.get $0
-   call $~lib/rt/pure/__release
-   local.get $1
   end
+  local.get $0
  )
  (func $start:retain-release-sanity (; 26 ;)
   (local $0 i32)
@@ -1826,7 +1807,7 @@
   if
    i32.const 1296
    i32.const 1088
-   i32.const 299
+   i32.const 302
    i32.const 21
    call $~lib/builtins/abort
    unreachable
@@ -1992,10 +1973,10 @@
   call $~lib/rt/pure/__release
   i32.const 1360
   i32.const 1392
-  call $~lib/string/String.__concat
+  call $~lib/string/String._add
   local.tee $3
   i32.const 1456
-  call $~lib/string/String.__concat
+  call $~lib/string/String._add
   local.get $3
   call $~lib/rt/pure/__release
   call $~lib/rt/pure/__release

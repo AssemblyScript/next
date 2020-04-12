@@ -316,7 +316,7 @@
   if
    i32.const 1120
    i32.const 1168
-   i32.const 54
+   i32.const 56
    i32.const 43
    call $~lib/builtins/abort
    unreachable
@@ -483,37 +483,23 @@
   end
   i32.const 0
  )
- (func $~lib/string/String.__eq (; 9 ;) (param $0 i32) (param $1 i32) (result i32)
+ (func $~lib/string/String#_eq (; 9 ;) (param $0 i32) (param $1 i32) (result i32)
   (local $2 i32)
   local.get $0
+  call $~lib/string/String#get:length
+  local.tee $2
   local.get $1
-  i32.eq
+  call $~lib/string/String#get:length
+  i32.ne
   if
-   i32.const 1
+   i32.const 0
    return
   end
-  block $folding-inner0
-   local.get $1
-   i32.eqz
-   i32.const 1
-   local.get $0
-   select
-   br_if $folding-inner0
-   local.get $0
-   call $~lib/string/String#get:length
-   local.tee $2
-   local.get $1
-   call $~lib/string/String#get:length
-   i32.ne
-   br_if $folding-inner0
-   local.get $0
-   local.get $1
-   local.get $2
-   call $~lib/util/string/compareImpl
-   i32.eqz
-   return
-  end
-  i32.const 0
+  local.get $0
+  local.get $1
+  local.get $2
+  call $~lib/util/string/compareImpl
+  i32.eqz
  )
  (func $~lib/map/Map<~lib/string/String,usize>#find (; 10 ;) (param $0 i32) (param $1 i32) (result i32)
   local.get $0
@@ -540,7 +526,7 @@
      local.get $0
      i32.load
      i32.const 1040
-     call $~lib/string/String.__eq
+     call $~lib/string/String#_eq
     end
     if
      local.get $0
@@ -1031,14 +1017,16 @@
  )
  (func $~lib/symbol/_Symbol.for (; 17 ;) (result i32)
   (local $0 i32)
+  (local $1 i32)
   global.get $~lib/symbol/stringToId
+  local.tee $0
   if
-   global.get $~lib/symbol/stringToId
+   local.get $0
    i32.const 1040
    call $~lib/util/hash/hashStr
    call $~lib/map/Map<~lib/string/String,usize>#find
    if
-    global.get $~lib/symbol/stringToId
+    local.get $0
     i32.const 1040
     call $~lib/util/hash/hashStr
     call $~lib/map/Map<~lib/string/String,usize>#find
@@ -1085,46 +1073,46 @@
    i32.const 24
    i32.const 4
    call $~lib/rt/stub/__alloc
-   local.tee $0
+   local.tee $1
    i32.const 0
    i32.store
-   local.get $0
+   local.get $1
    i32.const 0
    i32.store offset=4
-   local.get $0
+   local.get $1
    i32.const 0
    i32.store offset=8
-   local.get $0
+   local.get $1
    i32.const 0
    i32.store offset=12
-   local.get $0
+   local.get $1
    i32.const 0
    i32.store offset=16
-   local.get $0
+   local.get $1
    i32.const 0
    i32.store offset=20
-   local.get $0
+   local.get $1
    call $~lib/map/Map<~lib/string/String,usize>#clear
-   local.get $0
+   local.get $1
    global.set $~lib/symbol/idToString
   end
   global.get $~lib/symbol/nextId
-  local.tee $0
+  local.tee $1
   i32.const 1
   i32.add
   global.set $~lib/symbol/nextId
-  local.get $0
+  local.get $1
   i32.eqz
   if
    unreachable
   end
-  global.get $~lib/symbol/stringToId
   local.get $0
+  local.get $1
   call $~lib/map/Map<~lib/string/String,usize>#set
   global.get $~lib/symbol/idToString
-  local.get $0
+  local.get $1
   call $~lib/map/Map<usize,~lib/string/String>#set
-  local.get $0
+  local.get $1
  )
  (func $~lib/map/Map<usize,~lib/string/String>#has (; 18 ;) (param $0 i32) (param $1 i32) (result i32)
   local.get $0
@@ -1155,16 +1143,18 @@
   i32.load offset=4
  )
  (func $~lib/symbol/_Symbol.keyFor (; 20 ;) (param $0 i32) (result i32)
+  (local $1 i32)
   global.get $~lib/symbol/idToString
+  local.tee $1
   if (result i32)
-   global.get $~lib/symbol/idToString
+   local.get $1
    local.get $0
    call $~lib/map/Map<usize,~lib/string/String>#has
   else
    i32.const 0
   end
   if (result i32)
-   global.get $~lib/symbol/idToString
+   local.get $1
    local.get $0
    call $~lib/map/Map<usize,~lib/string/String>#get
   else
@@ -1344,7 +1334,7 @@
    end
   end
  )
- (func $~lib/string/String.__concat (; 22 ;) (param $0 i32) (param $1 i32) (result i32)
+ (func $~lib/string/String._add (; 22 ;) (param $0 i32) (param $1 i32) (result i32)
   (local $2 i32)
   (local $3 i32)
   (local $4 i32)
@@ -1359,10 +1349,6 @@
    i32.shl
    local.tee $2
    local.get $1
-   i32.const 1840
-   local.get $1
-   select
-   local.tee $1
    call $~lib/string/String#get:length
    i32.const 1
    i32.shl
@@ -1463,9 +1449,9 @@
     i32.const 1344
    end
   end
-  call $~lib/string/String.__concat
+  call $~lib/string/String._add
   i32.const 1872
-  call $~lib/string/String.__concat
+  call $~lib/string/String._add
  )
  (func $start:std/symbol (; 24 ;)
   (local $0 i32)
@@ -1510,6 +1496,19 @@
   call $~lib/symbol/_Symbol.keyFor
   global.set $std/symbol/key2
   global.get $std/symbol/key1
+  local.tee $0
+  i32.eqz
+  i32.const 1
+  i32.or
+  if (result i32)
+   local.get $0
+   i32.eqz
+  else
+   local.get $0
+   i32.const 0
+   call $~lib/string/String#_eq
+  end
+  i32.eqz
   if
    i32.const 0
    i32.const 1072
@@ -1519,6 +1518,19 @@
    unreachable
   end
   global.get $std/symbol/key2
+  local.tee $0
+  i32.eqz
+  i32.const 1
+  i32.or
+  if (result i32)
+   local.get $0
+   i32.eqz
+  else
+   local.get $0
+   i32.const 0
+   call $~lib/string/String#_eq
+  end
+  i32.eqz
   if
    i32.const 0
    i32.const 1072
@@ -1557,7 +1569,7 @@
   global.set $std/symbol/key4
   global.get $std/symbol/key3
   i32.const 1040
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -1569,7 +1581,7 @@
   end
   global.get $std/symbol/key3
   global.get $std/symbol/key4
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -1582,7 +1594,7 @@
   call $~lib/symbol/Symbol
   call $~lib/symbol/_Symbol#toString
   i32.const 1904
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -1595,7 +1607,7 @@
   global.get $std/symbol/sym3
   call $~lib/symbol/_Symbol#toString
   i32.const 1936
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -1612,7 +1624,7 @@
   i32.const 1
   call $~lib/symbol/_Symbol#toString
   i32.const 1984
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -1625,7 +1637,7 @@
   global.get $std/symbol/isConcatSpreadable
   call $~lib/symbol/_Symbol#toString
   i32.const 2048
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0

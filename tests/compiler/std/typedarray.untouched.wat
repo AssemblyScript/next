@@ -5103,7 +5103,7 @@
   if
    i32.const 368
    i32.const 528
-   i32.const 104
+   i32.const 107
    i32.const 42
    call $~lib/builtins/abort
    unreachable
@@ -5410,7 +5410,7 @@
   if
    i32.const 368
    i32.const 528
-   i32.const 104
+   i32.const 107
    i32.const 42
    call $~lib/builtins/abort
    unreachable
@@ -32375,78 +32375,38 @@
   call $~lib/rt/pure/__release
   local.get $7
  )
- (func $~lib/string/String.__eq (; 483 ;) (param $0 i32) (param $1 i32) (result i32)
+ (func $~lib/string/String#_eq (; 483 ;) (param $0 i32) (param $1 i32) (result i32)
   (local $2 i32)
   (local $3 i32)
-  local.get $0
-  call $~lib/rt/pure/__retain
-  local.set $0
   local.get $1
   call $~lib/rt/pure/__retain
   local.set $1
   local.get $0
-  local.get $1
-  i32.eq
-  if
-   i32.const 1
-   local.set $2
-   local.get $0
-   call $~lib/rt/pure/__release
-   local.get $1
-   call $~lib/rt/pure/__release
-   local.get $2
-   return
-  end
-  local.get $0
-  i32.const 0
-  i32.eq
-  if (result i32)
-   i32.const 1
-  else
-   local.get $1
-   i32.const 0
-   i32.eq
-  end
-  if
-   i32.const 0
-   local.set $2
-   local.get $0
-   call $~lib/rt/pure/__release
-   local.get $1
-   call $~lib/rt/pure/__release
-   local.get $2
-   return
-  end
-  local.get $0
   call $~lib/string/String#get:length
-  local.set $3
-  local.get $3
+  local.set $2
+  local.get $2
   local.get $1
   call $~lib/string/String#get:length
   i32.ne
   if
    i32.const 0
-   local.set $2
-   local.get $0
-   call $~lib/rt/pure/__release
+   local.set $3
    local.get $1
    call $~lib/rt/pure/__release
-   local.get $2
+   local.get $3
    return
   end
   local.get $0
   i32.const 0
   local.get $1
   i32.const 0
-  local.get $3
+  local.get $2
   call $~lib/util/string/compareImpl
   i32.eqz
-  local.set $2
-  local.get $0
-  call $~lib/rt/pure/__release
+  local.set $3
   local.get $1
   call $~lib/rt/pure/__release
-  local.get $2
+  local.get $3
  )
  (func $~lib/typedarray/Int8Array#toString (; 484 ;) (param $0 i32) (result i32)
   local.get $0
@@ -32489,7 +32449,7 @@
   call $~lib/typedarray/Int8Array#join
   local.tee $2
   i32.const 2416
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -32503,7 +32463,7 @@
   call $~lib/typedarray/Int8Array#toString
   local.tee $3
   i32.const 2416
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -32816,7 +32776,7 @@
   call $~lib/typedarray/Uint8Array#join
   local.tee $2
   i32.const 2416
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -32830,7 +32790,7 @@
   call $~lib/typedarray/Uint8Array#toString
   local.tee $3
   i32.const 2416
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -32906,7 +32866,7 @@
   call $~lib/typedarray/Uint8ClampedArray#join
   local.tee $2
   i32.const 2416
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -32920,7 +32880,7 @@
   call $~lib/typedarray/Uint8ClampedArray#toString
   local.tee $3
   i32.const 2416
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -33233,7 +33193,7 @@
   call $~lib/typedarray/Int16Array#join
   local.tee $2
   i32.const 2416
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -33247,7 +33207,7 @@
   call $~lib/typedarray/Int16Array#toString
   local.tee $3
   i32.const 2416
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -33526,7 +33486,7 @@
   call $~lib/typedarray/Uint16Array#join
   local.tee $2
   i32.const 2416
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -33540,7 +33500,7 @@
   call $~lib/typedarray/Uint16Array#toString
   local.tee $3
   i32.const 2416
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -33829,7 +33789,7 @@
   call $~lib/typedarray/Int32Array#join
   local.tee $2
   i32.const 2416
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -33843,7 +33803,7 @@
   call $~lib/typedarray/Int32Array#toString
   local.tee $3
   i32.const 2416
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -34112,7 +34072,7 @@
   call $~lib/typedarray/Uint32Array#join
   local.tee $2
   i32.const 2416
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -34126,7 +34086,7 @@
   call $~lib/typedarray/Uint32Array#toString
   local.tee $3
   i32.const 2416
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -34712,7 +34672,7 @@
   call $~lib/typedarray/Int64Array#join
   local.tee $2
   i32.const 2416
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -34726,7 +34686,7 @@
   call $~lib/typedarray/Int64Array#toString
   local.tee $3
   i32.const 2416
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -35087,7 +35047,7 @@
   call $~lib/typedarray/Uint64Array#join
   local.tee $2
   i32.const 2416
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -35101,7 +35061,7 @@
   call $~lib/typedarray/Uint64Array#toString
   local.tee $3
   i32.const 2416
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -36708,7 +36668,7 @@
   call $~lib/typedarray/Float32Array#join
   local.tee $2
   i32.const 3584
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -36722,7 +36682,7 @@
   call $~lib/typedarray/Float32Array#toString
   local.tee $3
   i32.const 3584
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -36941,7 +36901,7 @@
   call $~lib/typedarray/Float64Array#join
   local.tee $2
   i32.const 3584
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -36955,7 +36915,7 @@
   call $~lib/typedarray/Float64Array#toString
   local.tee $3
   i32.const 3584
-  call $~lib/string/String.__eq
+  call $~lib/string/String#_eq
   i32.eqz
   if
    i32.const 0
@@ -36982,7 +36942,7 @@
   if
    i32.const 32
    i32.const 80
-   i32.const 54
+   i32.const 56
    i32.const 43
    call $~lib/builtins/abort
    unreachable
