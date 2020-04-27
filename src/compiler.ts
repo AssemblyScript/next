@@ -169,6 +169,7 @@ import {
 
   NamedTypeNode,
 
+  ScopeAnalyzer,
   findDecorator,
   isTypeOmitted
 } from "./ast";
@@ -1292,6 +1293,7 @@ export class Compiler extends DiagnosticEmitter {
 
     // concrete function
     if (bodyNode) {
+      ScopeAnalyzer.analyze(<FunctionDeclaration>instance.declaration, this.diagnostics);
 
       // must not be ambient
       if (instance.is(CommonFlags.AMBIENT)) {
