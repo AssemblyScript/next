@@ -174,7 +174,8 @@ import {
   NamedTypeNode,
 
   findDecorator,
-  isTypeOmitted
+  isTypeOmitted,
+  TemplateLiteralExpression
 } from "./ast";
 
 import {
@@ -8763,6 +8764,10 @@ export class Compiler extends DiagnosticEmitter {
         assert(!implicitlyNegate);
         return this.compileStringLiteral(<StringLiteralExpression>expression, constraints);
       }
+      case LiteralKind.TEMPLATE: {
+        assert(!implicitlyNegate);
+        return this.compileTemplateLiteral(<TemplateLiteralExpression>expression, constraints);
+      }
       case LiteralKind.OBJECT: {
         assert(!implicitlyNegate);
         return this.compileObjectLiteral(<ObjectLiteralExpression>expression, contextualType);
@@ -8781,7 +8786,13 @@ export class Compiler extends DiagnosticEmitter {
     return module.unreachable();
   }
 
-  private compileStringLiteral(
+  compileTemplateLiteral(expr: TemplateLiteralExpression, constraints: Constraints): ExpressionRef {
+    const innerExpressions: ExpressionRef[] = expr.expresssionParts;
+
+    return 0;
+  }
+
+  compileStringLiteral(
     expression: StringLiteralExpression,
     constraints: Constraints
   ): ExpressionRef {

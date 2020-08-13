@@ -372,6 +372,13 @@ export abstract class Node {
     return new StringLiteralExpression(value, range);
   }
 
+  static createTemplateLiteralExpression(
+    value: string,
+    range: Range
+  ): StringLiteralExpression {
+    return new TemplateLiteralExpression(value, range);
+  }
+
   static createSuperExpression(
     range: Range
   ): SuperExpression {
@@ -1089,7 +1096,8 @@ export enum LiteralKind {
   STRING,
   REGEXP,
   ARRAY,
-  OBJECT
+  OBJECT,
+  TEMPLATE,
 }
 
 /** Base class of all literal expressions. */
@@ -1430,6 +1438,17 @@ export class StringLiteralExpression extends LiteralExpression {
   ) {
     super(LiteralKind.STRING, range);
   }
+}
+
+/** Represents a string template literal expression. */
+export class TemplateLiteralExpression extends LiteralExpression {
+  constructor(
+    /** String value without quotes. */
+    public expresssionParts: Expression[],
+    /** Source range. */
+    range: Range
+) {
+    super(LiteralKind.TEMPLATE, range);
 }
 
 /** Represents a `super` expression. */
