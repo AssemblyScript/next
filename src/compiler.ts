@@ -227,7 +227,7 @@ export class Options {
   /** Static table start offset. */
   tableBase: u32 = 0;
   /** Global aliases, mapping alias names as the key to internal names to be aliased as the value. */
-  globalAliases: Map<string,string> | null = null;
+  globalAliases: Map<string, string> | null = null;
   /** Features to activate by default. These are the finished proposals. */
   features: Feature = Feature.MUTABLE_GLOBALS;
   /** If true, disallows unsafe features in user code. */
@@ -348,7 +348,7 @@ export class Compiler extends DiagnosticEmitter {
   /** Memory segments being compiled. */
   memorySegments: MemorySegment[] = [];
   /** Map of already compiled static string segments. */
-  stringSegments: Map<string,MemorySegment> = new Map();
+  stringSegments: Map<string, MemorySegment> = new Map();
   /** Function table being compiled. First elem is blank. */
   functionTable: Function[] = [];
   /** Arguments length helper global. */
@@ -385,14 +385,12 @@ export class Compiler extends DiagnosticEmitter {
     if (options.memoryBase) {
       this.memoryOffset = i64_new(options.memoryBase);
       module.setLowMemoryUnused(false);
+    } else if (!options.lowMemoryLimit && options.optimizeLevelHint >= 2) {
+      this.memoryOffset = i64_new(1024);
+      module.setLowMemoryUnused(true);
     } else {
-      if (!options.lowMemoryLimit && options.optimizeLevelHint >= 2) {
-        this.memoryOffset = i64_new(1024);
-        module.setLowMemoryUnused(true);
-      } else {
-        this.memoryOffset = i64_new(8);
-        module.setLowMemoryUnused(false);
-      }
+      this.memoryOffset = i64_new(8);
+      module.setLowMemoryUnused(false);
     }
     var featureFlags: FeatureFlags = 0;
     if (options.hasFeature(Feature.SIGN_EXTENSION)) featureFlags |= FeatureFlags.SignExt;
@@ -763,9 +761,7 @@ export class Compiler extends DiagnosticEmitter {
             DiagnosticCode.Cannot_export_a_mutable_global,
             global.identifierNode.range
           );
-        } else {
-          if (element.is(CommonFlags.COMPILED)) this.module.addGlobalExport(element.internalName, prefix + name);
-        }
+        } else if (element.is(CommonFlags.COMPILED)) this.module.addGlobalExport(element.internalName, prefix + name);
         break;
       }
       case ElementKind.ENUMVALUE: {
@@ -1206,12 +1202,10 @@ export class Compiler extends DiagnosticEmitter {
       }
 
     // Initialize to zero if there's no initializer
+    } else if (global.is(CommonFlags.INLINED)) {
+      initExpr = this.compileInlineConstant(global, global.type, Constraints.PREFER_STATIC | Constraints.WILL_RETAIN);
     } else {
-      if (global.is(CommonFlags.INLINED)) {
-        initExpr = this.compileInlineConstant(global, global.type, Constraints.PREFER_STATIC | Constraints.WILL_RETAIN);
-      } else {
-        initExpr = this.makeZero(type, global.declaration);
-      }
+      initExpr = this.makeZero(type, global.declaration);
     }
 
     var internalName = global.internalName;
@@ -3204,22 +3198,20 @@ export class Compiler extends DiagnosticEmitter {
               else flow.unsetLocalFlag(local.index, LocalFlags.WRAPPED);
             }
           }
-        } else {
-          if (isManaged) {
-            // This is necessary because the first use (and assign) of the local could be taking place
-            // in a loop, subsequently marking it retained, but the second iteration of the loop
-            // still wouldn't release whatever is assigned in the first. Likewise, if the variable wasn't
-            // initialized but becomes released later on, whatever was stored before would be released.
-            // TODO: Detect this condition inside of a loop instead?
-            initializers.push(
-              module.local_set(local.index,
-                this.makeZero(type, declaration)
-              )
-            );
-            flow.setLocalFlag(local.index, LocalFlags.CONDITIONALLY_RETAINED);
-          } else if (local.type.isShortIntegerValue) {
-            flow.setLocalFlag(local.index, LocalFlags.WRAPPED);
-          }
+        } else if (isManaged) {
+          // This is necessary because the first use (and assign) of the local could be taking place
+          // in a loop, subsequently marking it retained, but the second iteration of the loop
+          // still wouldn't release whatever is assigned in the first. Likewise, if the variable wasn't
+          // initialized but becomes released later on, whatever was stored before would be released.
+          // TODO: Detect this condition inside of a loop instead?
+          initializers.push(
+            module.local_set(local.index,
+              this.makeZero(type, declaration)
+            )
+          );
+          flow.setLocalFlag(local.index, LocalFlags.CONDITIONALLY_RETAINED);
+        } else if (local.type.isShortIntegerValue) {
+          flow.setLocalFlag(local.index, LocalFlags.WRAPPED);
         }
       }
     }
@@ -3679,28 +3671,23 @@ export class Compiler extends DiagnosticEmitter {
     }
 
     if (fromType.isFloatValue) {
-
       // float to float
       if (toType.isFloatValue) {
         if (fromType.kind == TypeKind.F32) {
-
           // f32 to f64
           if (toType.kind == TypeKind.F64) {
             expr = module.unary(UnaryOp.PromoteF32, expr);
           }
-
           // otherwise f32 to f32
 
         // f64 to f32
         } else if (toType.kind == TypeKind.F32) {
           expr = module.unary(UnaryOp.DemoteF64, expr);
         }
-
         // otherwise f64 to f64
 
       // float to int
       } else if (toType.isIntegerValue) {
-
         // f32 to int
         if (fromType.kind == TypeKind.F32) {
           if (toType.isBooleanValue) {
@@ -3711,42 +3698,32 @@ export class Compiler extends DiagnosticEmitter {
             } else {
               expr = module.unary(UnaryOp.TruncF32ToI32, expr);
             }
+          } else if (toType.isLongIntegerValue) {
+            expr = module.unary(UnaryOp.TruncF32ToU64, expr);
           } else {
-            if (toType.isLongIntegerValue) {
-              expr = module.unary(UnaryOp.TruncF32ToU64, expr);
-            } else {
-              expr = module.unary(UnaryOp.TruncF32ToU32, expr);
-            }
+            expr = module.unary(UnaryOp.TruncF32ToU32, expr);
           }
-
         // f64 to int
-        } else {
-          if (toType.isBooleanValue) {
-            expr = this.makeIsTrueish(expr, Type.f64, reportNode);
-          } else if (toType.isSignedIntegerValue) {
-            if (toType.isLongIntegerValue) {
-              expr = module.unary(UnaryOp.TruncF64ToI64, expr);
-            } else {
-              expr = module.unary(UnaryOp.TruncF64ToI32, expr);
-            }
+        } else if (toType.isBooleanValue) {
+          expr = this.makeIsTrueish(expr, Type.f64, reportNode);
+        } else if (toType.isSignedIntegerValue) {
+          if (toType.isLongIntegerValue) {
+            expr = module.unary(UnaryOp.TruncF64ToI64, expr);
           } else {
-            if (toType.isLongIntegerValue) {
-              expr = module.unary(UnaryOp.TruncF64ToU64, expr);
-            } else {
-              expr = module.unary(UnaryOp.TruncF64ToU32, expr);
-            }
+            expr = module.unary(UnaryOp.TruncF64ToI32, expr);
           }
+        } else if (toType.isLongIntegerValue) {
+          expr = module.unary(UnaryOp.TruncF64ToU64, expr);
+        } else {
+          expr = module.unary(UnaryOp.TruncF64ToU32, expr);
         }
-
       // float to void
       } else {
         assert(toType.flags == TypeFlags.NONE, "void type expected");
         expr = module.drop(expr);
       }
-
     // int to float
     } else if (fromType.isIntegerValue && toType.isFloatValue) {
-
       // int to f32
       if (toType.kind == TypeKind.F32) {
         if (fromType.isLongIntegerValue) {
@@ -3764,63 +3741,56 @@ export class Compiler extends DiagnosticEmitter {
             expr
           );
         }
-
       // int to f64
-      } else {
-        if (fromType.isLongIntegerValue) {
-          expr = module.unary(
+      } else if (fromType.isLongIntegerValue) {
+        expr = module.unary(
             fromType.isSignedIntegerValue
               ? UnaryOp.ConvertI64ToF64
               : UnaryOp.ConvertU64ToF64,
             expr
-          );
-        } else {
-          expr = module.unary(
+        );
+      } else {
+        expr = module.unary(
             fromType.isSignedIntegerValue
               ? UnaryOp.ConvertI32ToF64
               : UnaryOp.ConvertU32ToF64,
             expr
-          );
-        }
-      }
-
-    // int to int
-    } else {
-      // i64 to ...
-      if (fromType.isLongIntegerValue) {
-
-        // i64 to i32 or smaller
-        if (toType.isBooleanValue) {
-          expr = module.binary(BinaryOp.NeI64, expr, module.i64(0));
-        } else if (!toType.isLongIntegerValue) {
-          expr = module.unary(UnaryOp.WrapI64, expr); // discards upper bits
-        }
-
-      // i32 or smaller to i64
-      } else if (toType.isLongIntegerValue) {
-        expr = module.unary(
-          fromType.isSignedIntegerValue ? UnaryOp.ExtendI32 : UnaryOp.ExtendU32,
-          this.ensureSmallIntegerWrap(expr, fromType) // must clear garbage bits
         );
-
-      // i32 to i32
-      } else {
-        // small i32 to ...
-        if (fromType.isShortIntegerValue) {
-          // small i32 to larger i32
-          if (fromType.size < toType.size) {
-            expr = this.ensureSmallIntegerWrap(expr, fromType); // must clear garbage bits
-          }
-        // same size
-        } else {
-          if (!explicit && !this.options.isWasm64 && fromType.isVaryingIntegerValue && !toType.isVaryingIntegerValue) {
-            this.warning(
-              DiagnosticCode.Conversion_from_type_0_to_1_will_require_an_explicit_cast_when_switching_between_32_64_bit,
-              reportNode.range, fromType.toString(), toType.toString()
-            );
-          }
-        }
       }
+    // int to int
+    } else if (fromType.isLongIntegerValue) {
+
+      // i64 to i32 or smaller
+      if (toType.isBooleanValue) {
+        expr = module.binary(BinaryOp.NeI64, expr, module.i64(0));
+      } else if (!toType.isLongIntegerValue) {
+        expr = module.unary(UnaryOp.WrapI64, expr); // discards upper bits
+      }
+
+    // i32 or smaller to i64
+    } else if (toType.isLongIntegerValue) {
+      expr = module.unary(
+        fromType.isSignedIntegerValue ? UnaryOp.ExtendI32 : UnaryOp.ExtendU32,
+        this.ensureSmallIntegerWrap(expr, fromType) // must clear garbage bits
+      );
+
+    // i32 to i32
+    } else if (fromType.isShortIntegerValue) {
+      // small i32 to larger i32
+      if (fromType.size < toType.size) {
+        expr = this.ensureSmallIntegerWrap(expr, fromType); // must clear garbage bits
+      }
+    // same size
+    } else if (
+      !explicit &&
+      !this.options.isWasm64 &&
+      fromType.isVaryingIntegerValue &&
+      !toType.isVaryingIntegerValue
+    ) {
+      this.warning(
+        DiagnosticCode.Conversion_from_type_0_to_1_will_require_an_explicit_cast_when_switching_between_32_64_bit,
+        reportNode.range, fromType.toString(), toType.toString()
+      );
     }
 
     this.currentType = toType;
@@ -6424,30 +6394,28 @@ export class Compiler extends DiagnosticEmitter {
       }
       flow.freeTempLocal(tempThis);
       return ret;
-    } else {
-      if (tee) { // (this.field = (t1 = value)), t1
-        let temp = flow.getTempLocal(fieldType);
-        if (!flow.canOverflow(valueExpr, fieldType)) flow.setLocalFlag(temp.index, LocalFlags.WRAPPED);
-        if (flow.isNonnull(valueExpr, fieldType)) flow.setLocalFlag(temp.index, LocalFlags.NONNULL);
-        let ret = module.block(null, [
-          module.store(fieldType.byteSize,
-            thisExpr,
-            module.local_tee(temp.index, valueExpr),
-            nativeFieldType, field.memoryOffset
-          ),
-          module.local_get(temp.index, nativeFieldType)
-        ], nativeFieldType);
-        flow.freeTempLocal(temp);
-        this.currentType = fieldType;
-        return ret;
-      } else { // this.field = value
-        this.currentType = Type.void;
-        return module.store(fieldType.byteSize,
+    } else if (tee) { // (this.field = (t1 = value)), t1
+      let temp = flow.getTempLocal(fieldType);
+      if (!flow.canOverflow(valueExpr, fieldType)) flow.setLocalFlag(temp.index, LocalFlags.WRAPPED);
+      if (flow.isNonnull(valueExpr, fieldType)) flow.setLocalFlag(temp.index, LocalFlags.NONNULL);
+      let ret = module.block(null, [
+        module.store(fieldType.byteSize,
           thisExpr,
-          valueExpr,
+          module.local_tee(temp.index, valueExpr),
           nativeFieldType, field.memoryOffset
-        );
-      }
+        ),
+        module.local_get(temp.index, nativeFieldType)
+      ], nativeFieldType);
+      flow.freeTempLocal(temp);
+      this.currentType = fieldType;
+      return ret;
+    } else { // this.field = value
+      this.currentType = Type.void;
+      return module.store(fieldType.byteSize,
+        thisExpr,
+        valueExpr,
+        nativeFieldType, field.memoryOffset
+      );
     }
   }
 
@@ -6697,7 +6665,7 @@ export class Compiler extends DiagnosticEmitter {
         assert(typeParameterNodes),
         typeArgumentNodes,
         this.currentFlow.actualFunction.parent,
-        uniqueMap<string,Type>(this.currentFlow.contextualTypeArguments),
+        uniqueMap<string, Type>(this.currentFlow.contextualTypeArguments),
         expression
       );
     }
@@ -7224,7 +7192,7 @@ export class Compiler extends DiagnosticEmitter {
       assert(!unboundOverloadPrototype.isBound);
       let unboundOverloadParent = unboundOverloadPrototype.parent;
       let isProperty = unboundOverloadParent.kind == ElementKind.PROPERTY_PROTOTYPE;
-      let classInstances: Map<string,Class> | null;
+      let classInstances: Map<string, Class> | null;
       if (isProperty) {
         let propertyParent = (<PropertyPrototype>unboundOverloadParent).parent;
         assert(propertyParent.kind == ElementKind.CLASS_PROTOTYPE);
@@ -8346,7 +8314,7 @@ export class Compiler extends DiagnosticEmitter {
         let functionInstance = this.resolver.resolveFunction(
           functionPrototype,
           null,
-          uniqueMap<string,Type>(flow.contextualTypeArguments)
+          uniqueMap<string, Type>(flow.contextualTypeArguments)
         );
         if (!functionInstance || !this.compileFunction(functionInstance)) return module.unreachable();
         if (contextualType.isExternalReference) {
@@ -8470,46 +8438,40 @@ export class Compiler extends DiagnosticEmitter {
       }
 
     // either none or both nullable
-    } else {
-
-      // downcast - check statically
-      if (actualType.isAssignableTo(expectedType)) {
-        return module.maybeDropCondition(expr, module.i32(1));
-
+    } else if (actualType.isAssignableTo(expectedType)) { // downcast - check statically
+      return module.maybeDropCondition(expr, module.i32(1));
       // upcast - check dynamically
-      } else if (expectedType.isAssignableTo(actualType)) {
-        let program = this.program;
-        if (!(actualType.isUnmanaged || expectedType.isUnmanaged)) {
-          // FIXME: the temp local and the if can be removed here once flows
-          // perform null checking, which would error earlier when checking
-          // uninitialized (thus zero) `var a: A` to be an instance of something.
-          let temp = flow.getTempLocal(actualType);
-          let instanceofInstance = assert(program.instanceofInstance);
-          this.compileFunction(instanceofInstance);
-          let ret = module.if(
-            module.unary(
-              nativeSizeType == NativeType.I64
-                ? UnaryOp.EqzI64
-                : UnaryOp.EqzI32,
-              module.local_tee(temp.index, expr),
-            ),
-            module.i32(0),
-            this.makeCallDirect(instanceofInstance, [
-              module.local_get(temp.index, nativeSizeType),
-              module.i32(expectedType.classReference!.id)
-            ], expression)
-          );
-          flow.freeTempLocal(temp);
-          return ret;
-        } else {
-          this.error(
-            DiagnosticCode.Operator_0_cannot_be_applied_to_types_1_and_2,
-            expression.range, "instanceof", actualType.toString(), expectedType.toString()
-          );
-        }
+    } else if (expectedType.isAssignableTo(actualType)) {
+      let program = this.program;
+      if (!(actualType.isUnmanaged || expectedType.isUnmanaged)) {
+        // FIXME: the temp local and the if can be removed here once flows
+        // perform null checking, which would error earlier when checking
+        // uninitialized (thus zero) `var a: A` to be an instance of something.
+        let temp = flow.getTempLocal(actualType);
+        let instanceofInstance = assert(program.instanceofInstance);
+        this.compileFunction(instanceofInstance);
+        let ret = module.if(
+          module.unary(
+            nativeSizeType == NativeType.I64
+              ? UnaryOp.EqzI64
+              : UnaryOp.EqzI32,
+            module.local_tee(temp.index, expr),
+          ),
+          module.i32(0),
+          this.makeCallDirect(instanceofInstance, [
+            module.local_get(temp.index, nativeSizeType),
+            module.i32(expectedType.classReference!.id)
+          ], expression)
+        );
+        flow.freeTempLocal(temp);
+        return ret;
+      } else {
+        this.error(
+          DiagnosticCode.Operator_0_cannot_be_applied_to_types_1_and_2,
+          expression.range, "instanceof", actualType.toString(), expectedType.toString()
+        );
       }
     }
-
     // false
     return module.maybeDropCondition(expr, module.i32(0));
   }
@@ -9205,14 +9167,14 @@ export class Compiler extends DiagnosticEmitter {
       classInstance = this.resolver.resolveClass(
         classPrototype,
         classReference.typeArguments,
-        uniqueMap<string,Type>(flow.contextualTypeArguments)
+        uniqueMap<string, Type>(flow.contextualTypeArguments)
       );
     } else {
       classInstance = this.resolver.resolveClassInclTypeArguments(
         classPrototype,
         typeArguments,
         flow.actualFunction.parent, // relative to caller
-        uniqueMap<string,Type>(flow.contextualTypeArguments),
+        uniqueMap<string, Type>(flow.contextualTypeArguments),
         expression
       );
     }
@@ -10664,7 +10626,7 @@ export class Compiler extends DiagnosticEmitter {
       case TypeKind.FUNCREF:
       case TypeKind.EXTERNREF:
       case TypeKind.EXNREF:
-      case TypeKind.ANYREF:{
+      case TypeKind.ANYREF: {
         return module.ref_is_null(expr);
       }
       default: {

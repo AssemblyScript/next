@@ -1602,12 +1602,14 @@ export class Source extends Node {
     while (l < r) {
       let m = l + ((r - l) >> 1);
       let s = unchecked(lineCache[m]);
-      if (pos < s) r = m;
-      else if (pos < unchecked(lineCache[m + 1])) {
+      if (pos < s) {
+        r = m;
+      } else if (pos < unchecked(lineCache[m + 1])) {
         this.lineColumn = pos - s + 1;
         return m + 1;
+      } else {
+        l = m + 1;
       }
-      else l = m + 1;
     }
     return assert(0);
   }
@@ -1852,8 +1854,8 @@ export class ExportStatement extends Statement {
       let normalizedPath = normalizePath(path.value);
       if (path.value.startsWith(".")) { // relative
         normalizedPath = resolvePath(normalizedPath, range.source.internalPath);
-      } else { // absolute
-        if (!normalizedPath.startsWith(LIBRARY_PREFIX)) normalizedPath = LIBRARY_PREFIX + normalizedPath;
+      } else if (!normalizedPath.startsWith(LIBRARY_PREFIX)) { // absolute
+        normalizedPath = LIBRARY_PREFIX + normalizedPath;
       }
       this.internalPath = normalizedPath;
     } else {
@@ -2043,8 +2045,8 @@ export class ImportStatement extends Statement {
     var normalizedPath = normalizePath(path.value);
     if (path.value.startsWith(".")) { // relative in project
       normalizedPath = resolvePath(normalizedPath, range.source.internalPath);
-    } else { // absolute in library
-      if (!normalizedPath.startsWith(LIBRARY_PREFIX)) normalizedPath = LIBRARY_PREFIX + normalizedPath;
+    } else if (!normalizedPath.startsWith(LIBRARY_PREFIX)) { // absolute in library
+      normalizedPath = LIBRARY_PREFIX + normalizedPath;
     }
     this.internalPath = normalizedPath;
   }
