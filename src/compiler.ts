@@ -5358,6 +5358,17 @@ export class Compiler extends DiagnosticEmitter {
       }
       case TypeKind.I32:
       case TypeKind.U32: {
+        if (
+          getExpressionId(leftExpr) == ExpressionId.Const &&
+          getExpressionId(rightExpr) == ExpressionId.Const
+        ) {
+          let leftValue = getConstValueI32(leftExpr);
+          let rightValue = getConstValueI32(rightExpr);
+          return module.i32(i64_low(i64_pow(
+            i64_new(leftValue),
+            i64_new(rightValue)
+          )));
+        }
         let instance = this.i32PowInstance;
         if (!instance) {
           let prototype = this.program.lookup(CommonNames.ipow32);
@@ -5384,6 +5395,15 @@ export class Compiler extends DiagnosticEmitter {
       }
       case TypeKind.I64:
       case TypeKind.U64: {
+        if (
+          getExpressionId(leftExpr) == ExpressionId.Const &&
+          getExpressionId(rightExpr) == ExpressionId.Const
+        ) {
+          let leftValue = i64_new(getConstValueI64Low(leftExpr), getConstValueI64High(leftExpr));
+          let rightValue = i64_new(getConstValueI64Low(rightExpr), getConstValueI64High(rightExpr));
+          let result = i64_pow(leftValue, rightValue);
+          return module.i64(i64_low(result), i64_high(result));
+        }
         let instance = this.i64PowInstance;
         if (!instance) {
           let prototype = this.program.lookup(CommonNames.ipow64);
@@ -5405,6 +5425,24 @@ export class Compiler extends DiagnosticEmitter {
       case TypeKind.ISIZE:
       case TypeKind.USIZE: {
         let isWasm64 = this.options.isWasm64;
+        if (
+          getExpressionId(leftExpr) == ExpressionId.Const &&
+          getExpressionId(rightExpr) == ExpressionId.Const
+        ) {
+          if (isWasm64) {
+            let leftValue = i64_new(getConstValueI64Low(leftExpr), getConstValueI64High(leftExpr));
+            let rightValue = i64_new(getConstValueI64Low(rightExpr), getConstValueI64High(rightExpr));
+            let result = i64_pow(leftValue, rightValue);
+            return module.i64(i64_low(result), i64_high(result));
+          } else {
+            let leftValue = getConstValueI32(leftExpr);
+            let rightValue = getConstValueI32(rightExpr);
+            return module.i32(i64_low(i64_pow(
+              i64_new(leftValue),
+              i64_new(rightValue)
+            )));
+          }
+        }
         let instance = isWasm64 ? this.i64PowInstance : this.i32PowInstance;
         if (!instance) {
           let prototype = this.program.lookup(isWasm64 ? CommonNames.ipow64 : CommonNames.ipow32);
@@ -5429,6 +5467,14 @@ export class Compiler extends DiagnosticEmitter {
         return this.makeCallDirect(instance, [ leftExpr, rightExpr ], reportNode);
       }
       case TypeKind.F32: {
+        if (
+          getExpressionId(leftExpr) == ExpressionId.Const &&
+          getExpressionId(rightExpr) == ExpressionId.Const
+        ) {
+          let leftValue = getConstValueF32(leftExpr);
+          let rightValue = getConstValueF32(rightExpr);
+          return module.f32(f32(Math.pow(leftValue, rightValue)));
+        }
         let instance = this.f32PowInstance;
         if (!instance) {
           let namespace = this.program.lookup(CommonNames.Mathf);
@@ -5458,6 +5504,14 @@ export class Compiler extends DiagnosticEmitter {
       }
       // Math.pow otherwise (result is f64)
       case TypeKind.F64: {
+        if (
+          getExpressionId(leftExpr) == ExpressionId.Const &&
+          getExpressionId(rightExpr) == ExpressionId.Const
+        ) {
+          let leftValue = getConstValueF64(leftExpr);
+          let rightValue = getConstValueF64(rightExpr);
+          return module.f64(Math.pow(leftValue, rightValue));
+        }
         let instance = this.f64PowInstance;
         if (!instance) {
           let namespace = this.program.lookup(CommonNames.Math);

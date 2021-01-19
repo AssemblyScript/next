@@ -81,6 +81,9 @@
  (global $~lib/math/random_state1_32 (mut i32) (i32.const 0))
  (global $~lib/math/NativeMath.sincos_sin (mut f64) (f64.const 0))
  (global $~lib/math/NativeMath.sincos_cos (mut f64) (f64.const 0))
+ (global $std/math/x (mut i64) (i64.const 0))
+ (global $std/math/y (mut i32) (i32.const 0))
+ (global $std/math/ux (mut i64) (i64.const 0))
  (export "memory" (memory $0))
  (start $~start)
  (func $~lib/math/NativeMath.scalbn (param $0 f64) (param $1 i32) (result f64)
@@ -49020,49 +49023,12 @@
    unreachable
   end
   i64.const 0
+  global.set $std/math/x
+  i64.const 0
   i64.const 0
   call $~lib/math/ipow64
   i64.const 1
   i64.ne
-  if
-   i32.const 0
-   i32.const 1056
-   i32.const 4044
-   i32.const 1
-   call $~lib/builtins/abort
-   unreachable
-  end
-  i64.const 0
-  i64.const 1
-  call $~lib/math/ipow64
-  i64.eqz
-  i32.eqz
-  if
-   i32.const 0
-   i32.const 1056
-   i32.const 4045
-   i32.const 1
-   call $~lib/builtins/abort
-   unreachable
-  end
-  i64.const 0
-  i64.const 2
-  call $~lib/math/ipow64
-  i64.eqz
-  i32.eqz
-  if
-   i32.const 0
-   i32.const 1056
-   i32.const 4046
-   i32.const 1
-   call $~lib/builtins/abort
-   unreachable
-  end
-  i64.const 0
-  i64.const 3
-  call $~lib/math/ipow64
-  i64.eqz
-  i32.eqz
   if
    i32.const 0
    i32.const 1056
@@ -49071,11 +49037,24 @@
    call $~lib/builtins/abort
    unreachable
   end
+  global.get $std/math/x
   i64.const 1
-  i64.const 0
   call $~lib/math/ipow64
-  i64.const 1
-  i64.ne
+  i64.eqz
+  i32.eqz
+  if
+   i32.const 0
+   i32.const 1056
+   i32.const 4048
+   i32.const 1
+   call $~lib/builtins/abort
+   unreachable
+  end
+  global.get $std/math/x
+  i64.const 2
+  call $~lib/math/ipow64
+  i64.eqz
+  i32.eqz
   if
    i32.const 0
    i32.const 1056
@@ -49084,11 +49063,11 @@
    call $~lib/builtins/abort
    unreachable
   end
-  i64.const 1
-  i64.const 1
+  global.get $std/math/x
+  i64.const 3
   call $~lib/math/ipow64
-  i64.const 1
-  i64.ne
+  i64.eqz
+  i32.eqz
   if
    i32.const 0
    i32.const 1056
@@ -49098,33 +49077,22 @@
    unreachable
   end
   i64.const 1
-  i64.const 2
-  call $~lib/math/ipow64
+  global.set $std/math/x
   i64.const 1
-  i64.ne
-  if
-   i32.const 0
-   i32.const 1056
-   i32.const 4051
-   i32.const 1
-   call $~lib/builtins/abort
-   unreachable
-  end
-  i64.const 1
-  i64.const 3
-  call $~lib/math/ipow64
-  i64.const 1
-  i64.ne
-  if
-   i32.const 0
-   i32.const 1056
-   i32.const 4052
-   i32.const 1
-   call $~lib/builtins/abort
-   unreachable
-  end
-  i64.const 2
   i64.const 0
+  call $~lib/math/ipow64
+  i64.const 1
+  i64.ne
+  if
+   i32.const 0
+   i32.const 1056
+   i32.const 4053
+   i32.const 1
+   call $~lib/builtins/abort
+   unreachable
+  end
+  global.get $std/math/x
+  i64.const 1
   call $~lib/math/ipow64
   i64.const 1
   i64.ne
@@ -49136,10 +49104,10 @@
    call $~lib/builtins/abort
    unreachable
   end
+  global.get $std/math/x
   i64.const 2
-  i64.const 1
   call $~lib/math/ipow64
-  i64.const 2
+  i64.const 1
   i64.ne
   if
    i32.const 0
@@ -49149,10 +49117,10 @@
    call $~lib/builtins/abort
    unreachable
   end
-  i64.const 2
-  i64.const 2
+  global.get $std/math/x
+  i64.const 3
   call $~lib/math/ipow64
-  i64.const 4
+  i64.const 1
   i64.ne
   if
    i32.const 0
@@ -49163,19 +49131,8 @@
    unreachable
   end
   i64.const 2
-  i64.const 3
-  call $~lib/math/ipow64
-  i64.const 8
-  i64.ne
-  if
-   i32.const 0
-   i32.const 1056
-   i32.const 4057
-   i32.const 1
-   call $~lib/builtins/abort
-   unreachable
-  end
-  i64.const -1
+  global.set $std/math/x
+  i64.const 2
   i64.const 0
   call $~lib/math/ipow64
   i64.const 1
@@ -49188,10 +49145,10 @@
    call $~lib/builtins/abort
    unreachable
   end
-  i64.const -1
+  global.get $std/math/x
   i64.const 1
   call $~lib/math/ipow64
-  i64.const -1
+  i64.const 2
   i64.ne
   if
    i32.const 0
@@ -49201,10 +49158,10 @@
    call $~lib/builtins/abort
    unreachable
   end
-  i64.const -1
+  global.get $std/math/x
   i64.const 2
   call $~lib/math/ipow64
-  i64.const 1
+  i64.const 4
   i64.ne
   if
    i32.const 0
@@ -49214,10 +49171,10 @@
    call $~lib/builtins/abort
    unreachable
   end
-  i64.const -1
+  global.get $std/math/x
   i64.const 3
   call $~lib/math/ipow64
-  i64.const -1
+  i64.const 8
   i64.ne
   if
    i32.const 0
@@ -49227,23 +49184,12 @@
    call $~lib/builtins/abort
    unreachable
   end
-  i64.const -2
+  i64.const -1
+  global.set $std/math/x
+  i64.const -1
   i64.const 0
   call $~lib/math/ipow64
   i64.const 1
-  i64.ne
-  if
-   i32.const 0
-   i32.const 1056
-   i32.const 4064
-   i32.const 1
-   call $~lib/builtins/abort
-   unreachable
-  end
-  i64.const -2
-  i64.const 1
-  call $~lib/math/ipow64
-  i64.const -2
   i64.ne
   if
    i32.const 0
@@ -49253,10 +49199,10 @@
    call $~lib/builtins/abort
    unreachable
   end
-  i64.const -2
-  i64.const 2
+  global.get $std/math/x
+  i64.const 1
   call $~lib/math/ipow64
-  i64.const 4
+  i64.const -1
   i64.ne
   if
    i32.const 0
@@ -49266,10 +49212,10 @@
    call $~lib/builtins/abort
    unreachable
   end
-  i64.const -2
-  i64.const 3
+  global.get $std/math/x
+  i64.const 2
   call $~lib/math/ipow64
-  i64.const -8
+  i64.const 1
   i64.ne
   if
    i32.const 0
@@ -49279,37 +49225,26 @@
    call $~lib/builtins/abort
    unreachable
   end
-  i64.const 2
-  i64.const 63
-  call $~lib/math/ipow64
-  i64.const -9223372036854775808
-  i64.ne
-  if
-   i32.const 0
-   i32.const 1056
-   i32.const 4069
-   i32.const 1
-   call $~lib/builtins/abort
-   unreachable
-  end
+  global.get $std/math/x
   i64.const 3
-  i64.const 40
   call $~lib/math/ipow64
-  i64.const -6289078614652622815
+  i64.const -1
   i64.ne
   if
    i32.const 0
    i32.const 1056
-   i32.const 4070
+   i32.const 4068
    i32.const 1
    call $~lib/builtins/abort
    unreachable
   end
-  i64.const 2
-  i64.const 64
+  i64.const -2
+  global.set $std/math/x
+  i64.const -2
+  i64.const 0
   call $~lib/math/ipow64
-  i64.eqz
-  i32.eqz
+  i64.const 1
+  i64.ne
   if
    i32.const 0
    i32.const 1056
@@ -49318,10 +49253,10 @@
    call $~lib/builtins/abort
    unreachable
   end
-  i64.const 3
-  i64.const 41
+  global.get $std/math/x
+  i64.const 1
   call $~lib/math/ipow64
-  i64.const -420491770248316829
+  i64.const -2
   i64.ne
   if
    i32.const 0
@@ -49331,10 +49266,10 @@
    call $~lib/builtins/abort
    unreachable
   end
-  i64.const 3
-  i64.const 128
+  global.get $std/math/x
+  i64.const 2
   call $~lib/math/ipow64
-  i64.const -9204772141784466943
+  i64.const 4
   i64.ne
   if
    i32.const 0
@@ -49344,37 +49279,67 @@
    call $~lib/builtins/abort
    unreachable
   end
-  i64.const 1
-  i64.const -1
+  global.get $std/math/x
+  i64.const 3
   call $~lib/math/ipow64
-  i64.const 1
+  i64.const -8
   i64.ne
   if
    i32.const 0
    i32.const 1056
-   i32.const 4075
+   i32.const 4074
    i32.const 1
    call $~lib/builtins/abort
    unreachable
   end
   i64.const 2
-  i64.const -1
+  global.set $std/math/x
+  i64.const 2
+  i64.const 63
+  call $~lib/math/ipow64
+  i64.const -9223372036854775808
+  i64.ne
+  if
+   i32.const 0
+   i32.const 1056
+   i32.const 4077
+   i32.const 1
+   call $~lib/builtins/abort
+   unreachable
+  end
+  global.get $std/math/x
+  i64.const 64
   call $~lib/math/ipow64
   i64.eqz
   i32.eqz
   if
    i32.const 0
    i32.const 1056
-   i32.const 4076
+   i32.const 4078
    i32.const 1
    call $~lib/builtins/abort
    unreachable
   end
-  i32.const 1
-  i32.const 3
-  call $~lib/math/ipow32
-  i32.const 1
-  i32.ne
+  i64.const 3
+  global.set $std/math/x
+  i64.const 3
+  i64.const 40
+  call $~lib/math/ipow64
+  i64.const -6289078614652622815
+  i64.ne
+  if
+   i32.const 0
+   i32.const 1056
+   i32.const 4081
+   i32.const 1
+   call $~lib/builtins/abort
+   unreachable
+  end
+  global.get $std/math/x
+  i64.const 41
+  call $~lib/math/ipow64
+  i64.const -420491770248316829
+  i64.ne
   if
    i32.const 0
    i32.const 1056
@@ -49383,11 +49348,11 @@
    call $~lib/builtins/abort
    unreachable
   end
-  i32.const -2
-  i32.const 3
-  call $~lib/math/ipow32
-  i32.const -8
-  i32.ne
+  global.get $std/math/x
+  i64.const 128
+  call $~lib/math/ipow64
+  i64.const -9204772141784466943
+  i64.ne
   if
    i32.const 0
    i32.const 1056
@@ -49396,37 +49361,13 @@
    call $~lib/builtins/abort
    unreachable
   end
-  i32.const -1
-  i32.const 0
-  call $~lib/math/ipow32
-  i32.const 1
-  i32.ne
-  if
-   i32.const 0
-   i32.const 1056
-   i32.const 4084
-   i32.const 1
-   call $~lib/builtins/abort
-   unreachable
-  end
-  i32.const -1
-  i32.const -1
-  call $~lib/math/ipow32
-  i32.const -1
-  i32.ne
-  if
-   i32.const 0
-   i32.const 1056
-   i32.const 4085
-   i32.const 1
-   call $~lib/builtins/abort
-   unreachable
-  end
-  i32.const -1
-  i32.const -2
-  call $~lib/math/ipow32
-  i32.const 1
-  i32.ne
+  i64.const 1
+  global.set $std/math/x
+  i64.const 1
+  i64.const -1
+  call $~lib/math/ipow64
+  i64.const 1
+  i64.ne
   if
    i32.const 0
    i32.const 1056
@@ -49435,22 +49376,13 @@
    call $~lib/builtins/abort
    unreachable
   end
-  i32.const -1
-  i32.const -3
-  call $~lib/math/ipow32
-  i32.const -1
-  i32.ne
-  if
-   i32.const 0
-   i32.const 1056
-   i32.const 4087
-   i32.const 1
-   call $~lib/builtins/abort
-   unreachable
-  end
-  i32.const 0
-  i32.const -2
-  call $~lib/math/ipow32
+  i64.const 2
+  global.set $std/math/x
+  i64.const 2
+  i64.const -1
+  call $~lib/math/ipow64
+  i64.eqz
+  i32.eqz
   if
    i32.const 0
    i32.const 1056
@@ -49460,42 +49392,9 @@
    unreachable
   end
   i32.const 0
-  i32.const -1
-  call $~lib/math/ipow32
-  if
-   i32.const 0
-   i32.const 1056
-   i32.const 4090
-   i32.const 1
-   call $~lib/builtins/abort
-   unreachable
-  end
+  global.set $std/math/y
   i32.const 0
-  i32.const 2
-  call $~lib/math/ipow32
-  if
-   i32.const 0
-   i32.const 1056
-   i32.const 4093
-   i32.const 1
-   call $~lib/builtins/abort
-   unreachable
-  end
-  i32.const 1
-  i32.const -2
-  call $~lib/math/ipow32
-  i32.const 1
-  i32.ne
-  if
-   i32.const 0
-   i32.const 1056
-   i32.const 4095
-   i32.const 1
-   call $~lib/builtins/abort
-   unreachable
-  end
-  i32.const 1
-  i32.const -1
+  i32.const 0
   call $~lib/math/ipow32
   i32.const 1
   i32.ne
@@ -49507,55 +49406,38 @@
    call $~lib/builtins/abort
    unreachable
   end
+  global.get $std/math/y
   i32.const 1
-  i32.const 2
   call $~lib/math/ipow32
-  i32.const 1
-  i32.ne
   if
    i32.const 0
    i32.const 1056
-   i32.const 4099
+   i32.const 4097
    i32.const 1
    call $~lib/builtins/abort
    unreachable
   end
   i32.const 1
+  global.set $std/math/y
+  i32.const 1
   i32.const 3
   call $~lib/math/ipow32
-  i32.const 255
-  i32.and
   i32.const 1
   i32.ne
   if
    i32.const 0
    i32.const 1056
-   i32.const 4101
+   i32.const 4100
    i32.const 1
    call $~lib/builtins/abort
    unreachable
   end
   i32.const -2
+  global.set $std/math/y
+  i32.const -2
   i32.const 3
   call $~lib/math/ipow32
-  i32.const 255
-  i32.and
-  i32.const 248
-  i32.ne
-  if
-   i32.const 0
-   i32.const 1056
-   i32.const 4102
-   i32.const 1
-   call $~lib/builtins/abort
-   unreachable
-  end
-  i32.const 4
-  i32.const 7
-  call $~lib/math/ipow32
-  i32.const 65535
-  i32.and
-  i32.const 16384
+  i32.const -8
   i32.ne
   if
    i32.const 0
@@ -49565,39 +49447,26 @@
    call $~lib/builtins/abort
    unreachable
   end
-  i32.const 4
-  i32.const 8
+  i32.const -1
+  global.set $std/math/y
+  i32.const -1
+  i32.const 0
   call $~lib/math/ipow32
-  i32.const 65535
-  i32.and
-  if
-   i32.const 0
-   i32.const 1056
-   i32.const 4104
-   i32.const 1
-   call $~lib/builtins/abort
-   unreachable
-  end
-  i32.const 5
-  i32.const 10
-  call $~lib/math/ipow32
-  i32.const 65535
-  i32.and
-  i32.const 761
+  i32.const 1
   i32.ne
   if
    i32.const 0
    i32.const 1056
-   i32.const 4105
+   i32.const 4106
    i32.const 1
    call $~lib/builtins/abort
    unreachable
   end
-  i64.const 0
-  i64.const 0
-  call $~lib/math/ipow64
-  i64.const 1
-  i64.ne
+  global.get $std/math/y
+  i32.const -1
+  call $~lib/math/ipow32
+  i32.const -1
+  i32.ne
   if
    i32.const 0
    i32.const 1056
@@ -49606,11 +49475,11 @@
    call $~lib/builtins/abort
    unreachable
   end
-  i64.const 0
-  i64.const 1
-  call $~lib/math/ipow64
-  i64.eqz
-  i32.eqz
+  global.get $std/math/y
+  i32.const -2
+  call $~lib/math/ipow32
+  i32.const 1
+  i32.ne
   if
    i32.const 0
    i32.const 1056
@@ -49619,11 +49488,11 @@
    call $~lib/builtins/abort
    unreachable
   end
-  i64.const 1
-  i64.const 3
-  call $~lib/math/ipow64
-  i64.const 1
-  i64.ne
+  global.get $std/math/y
+  i32.const -3
+  call $~lib/math/ipow32
+  i32.const -1
+  i32.ne
   if
    i32.const 0
    i32.const 1056
@@ -49632,6 +49501,51 @@
    call $~lib/builtins/abort
    unreachable
   end
+  i64.const 0
+  global.set $std/math/ux
+  i64.const 0
+  i64.const 0
+  call $~lib/math/ipow64
+  i64.const 1
+  i64.ne
+  if
+   i32.const 0
+   i32.const 1056
+   i32.const 4131
+   i32.const 1
+   call $~lib/builtins/abort
+   unreachable
+  end
+  global.get $std/math/ux
+  i64.const 1
+  call $~lib/math/ipow64
+  i64.eqz
+  i32.eqz
+  if
+   i32.const 0
+   i32.const 1056
+   i32.const 4132
+   i32.const 1
+   call $~lib/builtins/abort
+   unreachable
+  end
+  i64.const 1
+  global.set $std/math/ux
+  i64.const 1
+  i64.const 3
+  call $~lib/math/ipow64
+  i64.const 1
+  i64.ne
+  if
+   i32.const 0
+   i32.const 1056
+   i32.const 4135
+   i32.const 1
+   call $~lib/builtins/abort
+   unreachable
+  end
+  i64.const 2
+  global.set $std/math/ux
   i64.const 2
   i64.const 3
   call $~lib/math/ipow64
@@ -49640,11 +49554,13 @@
   if
    i32.const 0
    i32.const 1056
-   i32.const 4110
+   i32.const 4138
    i32.const 1
    call $~lib/builtins/abort
    unreachable
   end
+  i64.const 4294967295
+  global.set $std/math/ux
   i64.const 4294967295
   i64.const 3
   call $~lib/math/ipow64
@@ -49653,11 +49569,13 @@
   if
    i32.const 0
    i32.const 1056
-   i32.const 4111
+   i32.const 4141
    i32.const 1
    call $~lib/builtins/abort
    unreachable
   end
+  i64.const 65535
+  global.set $std/math/ux
   i64.const 65535
   i64.const 3
   call $~lib/math/ipow64
@@ -49666,12 +49584,12 @@
   if
    i32.const 0
    i32.const 1056
-   i32.const 4112
+   i32.const 4144
    i32.const 1
    call $~lib/builtins/abort
    unreachable
   end
-  i64.const 65535
+  global.get $std/math/ux
   i64.const 8
   call $~lib/math/ipow64
   i64.const -15762478437236735
@@ -49679,69 +49597,7 @@
   if
    i32.const 0
    i32.const 1056
-   i32.const 4113
-   i32.const 1
-   call $~lib/builtins/abort
-   unreachable
-  end
-  i64.const 61731
-  i64.const 4
-  call $~lib/math/ipow64
-  i64.const -3925184889716469295
-  i64.ne
-  if
-   i32.const 0
-   i32.const 1056
-   i32.const 4114
-   i32.const 1
-   call $~lib/builtins/abort
-   unreachable
-  end
-  i64.const 61731
-  i64.const 4
-  call $~lib/math/ipow64
-  i64.const -3925184889716469295
-  i64.ne
-  if
-   i32.const 0
-   i32.const 1056
-   i32.const 4115
-   i32.const 1
-   call $~lib/builtins/abort
-   unreachable
-  end
-  i64.const 57055
-  i64.const 3
-  call $~lib/math/ipow64
-  i64.const 339590
-  i64.const 3
-  call $~lib/math/ipow64
-  i64.add
-  i64.const 340126
-  i64.const 3
-  call $~lib/math/ipow64
-  i64.eq
-  if
-   i32.const 0
-   i32.const 1056
-   i32.const 4117
-   i32.const 1
-   call $~lib/builtins/abort
-   unreachable
-  end
-  i64.const 57055
-  i64.const 3
-  call $~lib/math/ipow64
-  i64.const 339590
-  i64.const 3
-  call $~lib/math/ipow64
-  i64.add
-  i64.const 39347712995520375
-  i64.ne
-  if
-   i32.const 0
-   i32.const 1056
-   i32.const 4118
+   i32.const 4145
    i32.const 1
    call $~lib/builtins/abort
    unreachable
@@ -49754,7 +49610,7 @@
   if
    i32.const 0
    i32.const 1056
-   i32.const 4120
+   i32.const 4153
    i32.const 1
    call $~lib/builtins/abort
    unreachable
@@ -49767,7 +49623,7 @@
   if
    i32.const 0
    i32.const 1056
-   i32.const 4121
+   i32.const 4154
    i32.const 1
    call $~lib/builtins/abort
    unreachable
@@ -49780,33 +49636,7 @@
   if
    i32.const 0
    i32.const 1056
-   i32.const 4122
-   i32.const 1
-   call $~lib/builtins/abort
-   unreachable
-  end
-  f64.const 0
-  f64.const 0
-  call $~lib/math/NativeMath.pow
-  f64.const 1
-  f64.ne
-  if
-   i32.const 0
-   i32.const 1056
-   i32.const 4123
-   i32.const 1
-   call $~lib/builtins/abort
-   unreachable
-  end
-  f64.const 1
-  f64.const 1
-  call $~lib/math/NativeMath.pow
-  f64.const 1
-  f64.ne
-  if
-   i32.const 0
-   i32.const 1056
-   i32.const 4124
+   i32.const 4155
    i32.const 1
    call $~lib/builtins/abort
    unreachable
