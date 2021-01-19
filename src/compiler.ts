@@ -225,6 +225,8 @@ export class Options {
   explicitStart: bool = false;
   /** Static memory start offset. */
   memoryBase: u32 = 0;
+  /** Static memory data to include. */
+  memoryData: Uint8Array | null = null;
   /** Static table start offset. */
   tableBase: u32 = 0;
   /** Global aliases, mapping alias names as the key to internal names to be aliased as the value. */
@@ -271,6 +273,11 @@ export class Options {
   /** Tests if a specific feature is activated. */
   hasFeature(feature: Feature): bool {
     return (this.features & feature) != 0;
+  }
+
+  /** Tests if options indicate a custom memory layout. */
+  hasCustomMemoryLayout(): bool {
+    return this.memoryBase > 0 || this.memoryData != null;
   }
 }
 
@@ -383,7 +390,7 @@ export class Compiler extends DiagnosticEmitter {
     var options = program.options;
     var module = Module.create();
     this.module = module;
-    if (options.memoryBase) {
+    if (options.hasCustomMemoryLayout()) {
       this.memoryOffset = i64_new(options.memoryBase);
       module.setLowMemoryUnused(false);
     } else {
@@ -415,6 +422,10 @@ export class Compiler extends DiagnosticEmitter {
     startFunctionInstance.internalName = BuiltinNames.start;
     this.currentFlow = startFunctionInstance.flow;
     this.currentBody = new Array<ExpressionRef>();
+
+    // inject custom memory data if provided
+    var memoryData = options.memoryData;
+    if (memoryData) this.addMemorySegment(memoryData, 1);
   }
 
   /** Performs compilation of the underlying {@link Program} to a {@link Module}. */
