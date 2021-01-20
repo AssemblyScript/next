@@ -1,0 +1,9 @@
+{
+  "asc_flags": [
+    "--runtime full"
+  ],
+  "stderr": [
+    "AS100: Not implemented: Closures"
+  ],
+  "skipInstantiate": true
+}
