@@ -6,6 +6,9 @@
  (type $i32_i32_i32_=>_none (func (param i32 i32 i32)))
  (type $none_=>_none (func))
  (type $i32_i32_i32_=>_i32 (func (param i32 i32 i32) (result i32)))
+ (type $i32_i64_=>_none (func (param i32 i64)))
+ (type $i32_i32_i64_=>_i32 (func (param i32 i32 i64) (result i32)))
+ (type $i32_=>_i64 (func (param i32) (result i64)))
  (type $i32_i32_i32_i32_=>_none (func (param i32 i32 i32 i32)))
  (type $none_=>_i32 (func (result i32)))
  (type $i32_i32_i32_i32_i32_=>_i32 (func (param i32 i32 i32 i32 i32) (result i32)))
@@ -2488,15 +2491,15 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
- (func $~lib/map/Map<~lib/string/String,usize>#set:bucketsMask (param $0 i32) (param $1 i32)
+ (func $~lib/map/Map<~lib/string/String,usize>#set:bucketsMask (param $0 i32) (param $1 i64)
   local.get $0
   local.get $1
-  i32.store offset=4
+  i64.store offset=8
  )
  (func $~lib/map/Map<~lib/string/String,usize>#set:entries (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
-  i32.store offset=8
+  i32.store offset=16
   local.get $0
   local.get $1
   i32.const 0
@@ -2505,17 +2508,17 @@
  (func $~lib/map/Map<~lib/string/String,usize>#set:entriesCapacity (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
-  i32.store offset=12
+  i32.store offset=20
  )
  (func $~lib/map/Map<~lib/string/String,usize>#set:entriesOffset (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
-  i32.store offset=16
+  i32.store offset=24
  )
  (func $~lib/map/Map<~lib/string/String,usize>#set:entriesCount (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
-  i32.store offset=20
+  i32.store offset=28
  )
  (func $~lib/map/Map<usize,~lib/string/String>#set:buckets (param $0 i32) (param $1 i32)
   local.get $0
@@ -2526,15 +2529,15 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
- (func $~lib/map/Map<usize,~lib/string/String>#set:bucketsMask (param $0 i32) (param $1 i32)
+ (func $~lib/map/Map<usize,~lib/string/String>#set:bucketsMask (param $0 i32) (param $1 i64)
   local.get $0
   local.get $1
-  i32.store offset=4
+  i64.store offset=8
  )
  (func $~lib/map/Map<usize,~lib/string/String>#set:entries (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
-  i32.store offset=8
+  i32.store offset=16
   local.get $0
   local.get $1
   i32.const 0
@@ -2543,17 +2546,17 @@
  (func $~lib/map/Map<usize,~lib/string/String>#set:entriesCapacity (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
-  i32.store offset=12
+  i32.store offset=20
  )
  (func $~lib/map/Map<usize,~lib/string/String>#set:entriesOffset (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
-  i32.store offset=16
+  i32.store offset=24
  )
  (func $~lib/map/Map<usize,~lib/string/String>#set:entriesCount (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
-  i32.store offset=20
+  i32.store offset=28
  )
  (func $~lib/string/String#get:length (param $0 i32) (result i32)
   local.get $0
@@ -2685,49 +2688,75 @@
   local.get $1
   i32.store offset=8
  )
- (func $~lib/util/hash/hash32 (param $0 i32) (result i32)
-  (local $1 i32)
-  i32.const -2128831035
-  local.set $1
-  local.get $1
+ (func $~lib/util/hash/HASH<usize> (param $0 i32) (result i64)
+  (local $1 i64)
+  (local $2 i32)
+  (local $3 i64)
+  i32.const 0
+  drop
+  i32.const 0
+  drop
+  i32.const 0
+  drop
+  i32.const 4
+  i32.const 4
+  i32.le_u
+  drop
   local.get $0
-  i32.const 255
-  i32.and
-  i32.xor
-  i32.const 16777619
-  i32.mul
+  local.set $2
+  i64.const 4
   local.set $1
+  i64.const 0
+  i64.const 2870177450012600261
+  i64.add
   local.get $1
-  local.get $0
-  i32.const 8
-  i32.shr_u
-  i32.const 255
-  i32.and
-  i32.xor
-  i32.const 16777619
-  i32.mul
-  local.set $1
-  local.get $1
-  local.get $0
-  i32.const 16
-  i32.shr_u
-  i32.const 255
-  i32.and
-  i32.xor
-  i32.const 16777619
-  i32.mul
-  local.set $1
-  local.get $1
-  local.get $0
-  i32.const 24
-  i32.shr_u
-  i32.xor
-  i32.const 16777619
-  i32.mul
-  local.set $1
-  local.get $1
+  i64.add
+  local.set $3
+  local.get $3
+  local.get $2
+  i64.extend_i32_u
+  i64.const -7046029288634856825
+  i64.mul
+  i64.xor
+  local.set $3
+  local.get $3
+  i64.const 23
+  i64.rotl
+  i64.const -4417276706812531889
+  i64.mul
+  i64.const 1609587929392839161
+  i64.add
+  local.set $3
+  local.get $3
+  local.get $3
+  i64.const 33
+  i64.shr_u
+  i64.xor
+  local.set $3
+  local.get $3
+  i64.const -4417276706812531889
+  i64.mul
+  local.set $3
+  local.get $3
+  local.get $3
+  i64.const 29
+  i64.shr_u
+  i64.xor
+  local.set $3
+  local.get $3
+  i64.const 1609587929392839161
+  i64.mul
+  local.set $3
+  local.get $3
+  local.get $3
+  i64.const 32
+  i64.shr_u
+  i64.xor
+  local.set $3
+  local.get $3
+  return
  )
- (func $~lib/map/Map<usize,~lib/string/String>#find (param $0 i32) (param $1 i32) (param $2 i32) (result i32)
+ (func $~lib/map/Map<usize,~lib/string/String>#find (param $0 i32) (param $1 i32) (param $2 i64) (result i32)
   (local $3 i32)
   (local $4 i32)
   (local $5 i32)
@@ -2735,8 +2764,9 @@
   i32.load
   local.get $2
   local.get $0
-  i32.load offset=4
-  i32.and
+  i64.load offset=8
+  i64.and
+  i32.wrap_i64
   i32.const 4
   i32.mul
   i32.add
@@ -2841,11 +2871,11 @@
   local.tee $5
   i32.store offset=4
   local.get $0
-  i32.load offset=8
+  i32.load offset=16
   local.set $6
   local.get $6
   local.get $0
-  i32.load offset=16
+  i32.load offset=24
   i32.const 12
   i32.mul
   i32.add
@@ -2879,33 +2909,12 @@
      local.get $10
      i32.load offset=4
      call $~lib/map/MapEntry<usize,~lib/string/String>#set:value
-     block $~lib/util/hash/HASH<usize>|inlined.1 (result i32)
-      local.get $12
-      local.set $13
-      i32.const 0
-      drop
-      i32.const 0
-      drop
-      i32.const 0
-      drop
-      i32.const 4
-      i32.const 1
-      i32.eq
-      drop
-      i32.const 4
-      i32.const 2
-      i32.eq
-      drop
-      i32.const 4
-      i32.const 4
-      i32.eq
-      drop
-      local.get $13
-      call $~lib/util/hash/hash32
-      br $~lib/util/hash/HASH<usize>|inlined.1
-     end
+     local.get $12
+     call $~lib/util/hash/HASH<usize>
      local.get $1
-     i32.and
+     i64.extend_i32_u
+     i64.and
+     i32.wrap_i64
      local.set $13
      local.get $3
      local.get $13
@@ -2937,6 +2946,7 @@
   call $~lib/map/Map<usize,~lib/string/String>#set:buckets
   local.get $0
   local.get $1
+  i64.extend_i32_u
   call $~lib/map/Map<usize,~lib/string/String>#set:bucketsMask
   local.get $0
   local.get $5
@@ -2946,7 +2956,7 @@
   call $~lib/map/Map<usize,~lib/string/String>#set:entriesCapacity
   local.get $0
   local.get $0
-  i32.load offset=20
+  i32.load offset=28
   call $~lib/map/Map<usize,~lib/string/String>#set:entriesOffset
   global.get $~lib/memory/__stack_pointer
   i32.const 8
@@ -4286,7 +4296,7 @@
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=8
+  i32.load offset=16
   local.set $2
   i32.const 1
   if (result i32)
@@ -4299,7 +4309,7 @@
   local.set $3
   local.get $3
   local.get $0
-  i32.load offset=16
+  i32.load offset=24
   i32.const 12
   i32.mul
   i32.add
@@ -4360,7 +4370,7 @@
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=8
+  i32.load offset=16
   local.set $2
   i32.const 0
   if (result i32)
@@ -4373,7 +4383,7 @@
   local.set $3
   local.get $3
   local.get $0
-  i32.load offset=16
+  i32.load offset=24
   i32.const 12
   i32.mul
   i32.add
@@ -4478,69 +4488,407 @@
    unreachable
   end
  )
- (func $~lib/util/hash/hashStr (param $0 i32) (result i32)
+ (func $~lib/util/hash/HASH<~lib/string/String> (param $0 i32) (result i64)
   (local $1 i32)
   (local $2 i32)
-  (local $3 i32)
+  (local $3 i64)
   (local $4 i32)
-  (local $5 i32)
+  (local $5 i64)
+  (local $6 i64)
+  (local $7 i64)
+  (local $8 i64)
+  (local $9 i32)
+  (local $10 i32)
+  (local $11 i32)
+  (local $12 i64)
+  (local $13 i64)
+  (local $14 i32)
+  (local $15 i64)
   global.get $~lib/memory/__stack_pointer
-  i32.const 4
+  i32.const 8
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
   global.get $~lib/memory/__stack_pointer
-  i32.const 0
-  i32.store
-  i32.const -2128831035
-  local.set $1
-  local.get $0
-  i32.const 0
-  i32.ne
-  if
-   i32.const 0
-   local.set $2
-   local.get $0
-   local.set $5
+  i64.const 0
+  i64.store
+  i32.const 1
+  drop
+  block $~lib/util/hash/hashStr|inlined.0 (result i64)
    global.get $~lib/memory/__stack_pointer
-   local.get $5
+   local.get $0
+   local.tee $1
    i32.store
-   local.get $5
+   local.get $1
+   i32.const 0
+   i32.eq
+   if
+    i64.const 0
+    br $~lib/util/hash/hashStr|inlined.0
+   end
+   local.get $1
+   local.set $14
+   global.get $~lib/memory/__stack_pointer
+   local.get $14
+   i32.store offset=4
+   local.get $14
    call $~lib/string/String#get:length
    i32.const 1
    i32.shl
+   local.set $2
+   i64.const 0
    local.set $3
-   loop $for-loop|0
+   i32.const 0
+   local.set $4
+   local.get $2
+   i32.const 32
+   i32.ge_s
+   if
+    i64.const 0
+    i64.const -7046029288634856825
+    i64.add
+    i64.const -4417276706812531889
+    i64.add
+    local.set $5
+    i64.const 0
+    i64.const -4417276706812531889
+    i64.add
+    local.set $6
+    i64.const 0
+    local.set $7
+    i64.const 0
+    i64.const -7046029288634856825
+    i64.sub
+    local.set $8
     local.get $2
+    local.set $9
+    local.get $2
+    i32.const 32
+    i32.sub
+    local.set $10
+    loop $while-continue|0
+     local.get $4
+     local.get $10
+     i32.le_s
+     local.set $11
+     local.get $11
+     if
+      local.get $5
+      local.set $13
+      local.get $1
+      local.get $4
+      i32.add
+      i64.load
+      local.set $12
+      local.get $13
+      local.get $12
+      i64.const -4417276706812531889
+      i64.mul
+      i64.add
+      i64.const 31
+      i64.rotl
+      i64.const -7046029288634856825
+      i64.mul
+      local.set $5
+      local.get $6
+      local.set $13
+      local.get $1
+      local.get $4
+      i32.add
+      i64.load offset=8
+      local.set $12
+      local.get $13
+      local.get $12
+      i64.const -4417276706812531889
+      i64.mul
+      i64.add
+      i64.const 31
+      i64.rotl
+      i64.const -7046029288634856825
+      i64.mul
+      local.set $6
+      local.get $7
+      local.set $13
+      local.get $1
+      local.get $4
+      i32.add
+      i64.load offset=16
+      local.set $12
+      local.get $13
+      local.get $12
+      i64.const -4417276706812531889
+      i64.mul
+      i64.add
+      i64.const 31
+      i64.rotl
+      i64.const -7046029288634856825
+      i64.mul
+      local.set $7
+      local.get $8
+      local.set $13
+      local.get $1
+      local.get $4
+      i32.add
+      i64.load offset=24
+      local.set $12
+      local.get $13
+      local.get $12
+      i64.const -4417276706812531889
+      i64.mul
+      i64.add
+      i64.const 31
+      i64.rotl
+      i64.const -7046029288634856825
+      i64.mul
+      local.set $8
+      local.get $4
+      i32.const 32
+      i32.add
+      local.set $4
+      br $while-continue|0
+     end
+    end
+    local.get $5
+    i64.const 1
+    i64.rotl
+    local.get $6
+    i64.const 7
+    i64.rotl
+    i64.add
+    local.get $7
+    i64.const 12
+    i64.rotl
+    i64.add
+    local.get $8
+    i64.const 18
+    i64.rotl
+    i64.add
+    local.set $3
+    local.get $5
+    i64.const -4417276706812531889
+    i64.mul
+    local.set $5
+    local.get $6
+    i64.const -4417276706812531889
+    i64.mul
+    local.set $6
+    local.get $7
+    i64.const -4417276706812531889
+    i64.mul
+    local.set $7
+    local.get $8
+    i64.const -4417276706812531889
+    i64.mul
+    local.set $8
     local.get $3
-    i32.lt_u
-    local.set $4
+    local.set $13
+    local.get $5
+    local.set $12
+    local.get $13
+    local.get $12
+    i64.const 31
+    i64.rotl
+    i64.const -7046029288634856825
+    i64.mul
+    i64.xor
+    i64.const -7046029288634856825
+    i64.mul
+    i64.const -8796714831421723037
+    i64.add
+    local.set $3
+    local.get $3
+    local.set $13
+    local.get $6
+    local.set $12
+    local.get $13
+    local.get $12
+    i64.const 31
+    i64.rotl
+    i64.const -7046029288634856825
+    i64.mul
+    i64.xor
+    i64.const -7046029288634856825
+    i64.mul
+    i64.const -8796714831421723037
+    i64.add
+    local.set $3
+    local.get $3
+    local.set $13
+    local.get $7
+    local.set $12
+    local.get $13
+    local.get $12
+    i64.const 31
+    i64.rotl
+    i64.const -7046029288634856825
+    i64.mul
+    i64.xor
+    i64.const -7046029288634856825
+    i64.mul
+    i64.const -8796714831421723037
+    i64.add
+    local.set $3
+    local.get $3
+    local.set $13
+    local.get $8
+    local.set $12
+    local.get $13
+    local.get $12
+    i64.const 31
+    i64.rotl
+    i64.const -7046029288634856825
+    i64.mul
+    i64.xor
+    i64.const -7046029288634856825
+    i64.mul
+    i64.const -8796714831421723037
+    i64.add
+    local.set $3
+    local.get $3
+    local.get $9
+    i64.extend_i32_s
+    i64.add
+    local.set $3
+   else
+    local.get $2
+    i64.extend_i32_s
+    i64.const 0
+    i64.add
+    i64.const 2870177450012600261
+    i64.add
+    local.set $3
+   end
+   local.get $2
+   i32.const 8
+   i32.sub
+   local.set $10
+   loop $while-continue|1
     local.get $4
+    local.get $10
+    i32.le_s
+    local.set $9
+    local.get $9
     if
+     local.get $3
      local.get $1
-     local.get $0
-     local.get $2
+     local.get $4
      i32.add
-     i32.load8_u
-     i32.xor
-     i32.const 16777619
-     i32.mul
-     local.set $1
-     local.get $2
-     i32.const 1
+     i64.load
+     i64.const -4417276706812531889
+     i64.mul
+     i64.const 31
+     i64.rotl
+     i64.const -7046029288634856825
+     i64.mul
+     i64.xor
+     local.set $3
+     local.get $3
+     i64.const 27
+     i64.rotl
+     i64.const -7046029288634856825
+     i64.mul
+     i64.const -8796714831421723037
+     i64.add
+     local.set $3
+     local.get $4
+     i32.const 8
      i32.add
-     local.set $2
-     br $for-loop|0
+     local.set $4
+     br $while-continue|1
     end
    end
+   local.get $4
+   i32.const 4
+   i32.add
+   local.get $2
+   i32.le_s
+   if
+    local.get $3
+    local.get $1
+    local.get $4
+    i32.add
+    i64.load32_u
+    i64.const -7046029288634856825
+    i64.mul
+    i64.xor
+    local.set $3
+    local.get $3
+    i64.const 23
+    i64.rotl
+    i64.const -4417276706812531889
+    i64.mul
+    i64.const 1609587929392839161
+    i64.add
+    local.set $3
+    local.get $4
+    i32.const 4
+    i32.add
+    local.set $4
+   end
+   loop $while-continue|2
+    local.get $4
+    local.get $2
+    i32.lt_s
+    local.set $9
+    local.get $9
+    if
+     local.get $3
+     local.get $1
+     local.get $4
+     i32.add
+     i64.load8_u
+     i64.const 2870177450012600261
+     i64.mul
+     i64.add
+     local.set $3
+     local.get $3
+     i64.const 11
+     i64.rotl
+     i64.const -7046029288634856825
+     i64.mul
+     local.set $3
+     local.get $4
+     i32.const 1
+     i32.add
+     local.set $4
+     br $while-continue|2
+    end
+   end
+   local.get $3
+   local.get $3
+   i64.const 33
+   i64.shr_u
+   i64.xor
+   local.set $3
+   local.get $3
+   i64.const -4417276706812531889
+   i64.mul
+   local.set $3
+   local.get $3
+   local.get $3
+   i64.const 29
+   i64.shr_u
+   i64.xor
+   local.set $3
+   local.get $3
+   i64.const 1609587929392839161
+   i64.mul
+   local.set $3
+   local.get $3
+   local.get $3
+   i64.const 32
+   i64.shr_u
+   i64.xor
+   local.set $3
+   local.get $3
   end
-  local.get $1
-  local.set $5
+  local.set $15
   global.get $~lib/memory/__stack_pointer
-  i32.const 4
+  i32.const 8
   i32.add
   global.set $~lib/memory/__stack_pointer
-  local.get $5
+  local.get $15
+  return
  )
  (func $~lib/string/String.__eq (param $0 i32) (param $1 i32) (result i32)
   (local $2 i32)
@@ -4637,7 +4985,7 @@
   global.set $~lib/memory/__stack_pointer
   local.get $3
  )
- (func $~lib/map/Map<~lib/string/String,usize>#find (param $0 i32) (param $1 i32) (param $2 i32) (result i32)
+ (func $~lib/map/Map<~lib/string/String,usize>#find (param $0 i32) (param $1 i32) (param $2 i64) (result i32)
   (local $3 i32)
   (local $4 i32)
   (local $5 i32)
@@ -4654,8 +5002,9 @@
   i32.load
   local.get $2
   local.get $0
-  i32.load offset=4
-  i32.and
+  i64.load offset=8
+  i64.and
+  i32.wrap_i64
   i32.const 4
   i32.mul
   i32.add
@@ -4720,9 +5069,8 @@
  )
  (func $~lib/map/Map<~lib/string/String,usize>#has (param $0 i32) (param $1 i32) (result i32)
   (local $2 i32)
-  (local $3 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -4730,52 +5078,42 @@
   i64.const 0
   i64.store
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store offset=8
+  i32.const 0
+  i32.store offset=8
   local.get $0
-  local.set $3
+  local.set $2
   global.get $~lib/memory/__stack_pointer
-  local.get $3
+  local.get $2
   i32.store
-  local.get $3
+  local.get $2
   local.get $1
-  local.set $3
+  local.set $2
   global.get $~lib/memory/__stack_pointer
-  local.get $3
+  local.get $2
   i32.store offset=4
-  local.get $3
-  block $~lib/util/hash/HASH<~lib/string/String>|inlined.0 (result i32)
-   global.get $~lib/memory/__stack_pointer
-   local.get $1
-   local.tee $2
-   i32.store offset=8
-   i32.const 1
-   drop
-   local.get $2
-   local.set $3
-   global.get $~lib/memory/__stack_pointer
-   local.get $3
-   i32.store offset=12
-   local.get $3
-   call $~lib/util/hash/hashStr
-   br $~lib/util/hash/HASH<~lib/string/String>|inlined.0
-  end
+  local.get $2
+  local.get $1
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=8
+  local.get $2
+  call $~lib/util/hash/HASH<~lib/string/String>
   call $~lib/map/Map<~lib/string/String,usize>#find
   i32.const 0
   i32.ne
-  local.set $3
+  local.set $2
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
-  local.get $3
+  local.get $2
  )
  (func $~lib/map/Map<~lib/string/String,usize>#get (param $0 i32) (param $1 i32) (result i32)
   (local $2 i32)
   (local $3 i32)
-  (local $4 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -4783,39 +5121,30 @@
   i64.const 0
   i64.store
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store offset=8
+  i32.const 0
+  i32.store offset=8
   local.get $0
-  local.set $4
-  global.get $~lib/memory/__stack_pointer
-  local.get $4
-  i32.store
-  local.get $4
-  local.get $1
-  local.set $4
-  global.get $~lib/memory/__stack_pointer
-  local.get $4
-  i32.store offset=4
-  local.get $4
-  block $~lib/util/hash/HASH<~lib/string/String>|inlined.1 (result i32)
-   global.get $~lib/memory/__stack_pointer
-   local.get $1
-   local.tee $2
-   i32.store offset=8
-   i32.const 1
-   drop
-   local.get $2
-   local.set $4
-   global.get $~lib/memory/__stack_pointer
-   local.get $4
-   i32.store offset=12
-   local.get $4
-   call $~lib/util/hash/hashStr
-   br $~lib/util/hash/HASH<~lib/string/String>|inlined.1
-  end
-  call $~lib/map/Map<~lib/string/String,usize>#find
   local.set $3
+  global.get $~lib/memory/__stack_pointer
   local.get $3
+  i32.store
+  local.get $3
+  local.get $1
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store offset=4
+  local.get $3
+  local.get $1
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store offset=8
+  local.get $3
+  call $~lib/util/hash/HASH<~lib/string/String>
+  call $~lib/map/Map<~lib/string/String,usize>#find
+  local.set $2
+  local.get $2
   i32.eqz
   if
    i32.const 624
@@ -4825,14 +5154,14 @@
    call $~lib/builtins/abort
    unreachable
   end
-  local.get $3
+  local.get $2
   i32.load offset=4
-  local.set $4
+  local.set $3
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
-  local.get $4
+  local.get $3
  )
  (func $~lib/map/Map<~lib/string/String,usize>#rehash (param $0 i32) (param $1 i32)
   (local $2 i32)
@@ -4850,7 +5179,7 @@
   (local $14 i32)
   (local $15 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 20
+  i32.const 16
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -4860,9 +5189,6 @@
   global.get $~lib/memory/__stack_pointer
   i64.const 0
   i64.store offset=8
-  global.get $~lib/memory/__stack_pointer
-  i32.const 0
-  i32.store offset=16
   local.get $1
   i32.const 1
   i32.add
@@ -4890,11 +5216,11 @@
   local.tee $5
   i32.store offset=4
   local.get $0
-  i32.load offset=8
+  i32.load offset=16
   local.set $6
   local.get $6
   local.get $0
-  i32.load offset=16
+  i32.load offset=24
   i32.const 12
   i32.mul
   i32.add
@@ -4930,24 +5256,17 @@
      local.get $10
      i32.load offset=4
      call $~lib/map/MapEntry<~lib/string/String,usize>#set:value
-     block $~lib/util/hash/HASH<~lib/string/String>|inlined.3 (result i32)
-      global.get $~lib/memory/__stack_pointer
-      local.get $12
-      local.tee $13
-      i32.store offset=12
-      i32.const 1
-      drop
-      local.get $13
-      local.set $15
-      global.get $~lib/memory/__stack_pointer
-      local.get $15
-      i32.store offset=16
-      local.get $15
-      call $~lib/util/hash/hashStr
-      br $~lib/util/hash/HASH<~lib/string/String>|inlined.3
-     end
+     local.get $12
+     local.set $15
+     global.get $~lib/memory/__stack_pointer
+     local.get $15
+     i32.store offset=12
+     local.get $15
+     call $~lib/util/hash/HASH<~lib/string/String>
      local.get $1
-     i32.and
+     i64.extend_i32_u
+     i64.and
+     i32.wrap_i64
      local.set $13
      local.get $3
      local.get $13
@@ -4979,6 +5298,7 @@
   call $~lib/map/Map<~lib/string/String,usize>#set:buckets
   local.get $0
   local.get $1
+  i64.extend_i32_u
   call $~lib/map/Map<~lib/string/String,usize>#set:bucketsMask
   local.get $0
   local.get $5
@@ -4988,15 +5308,15 @@
   call $~lib/map/Map<~lib/string/String,usize>#set:entriesCapacity
   local.get $0
   local.get $0
-  i32.load offset=20
+  i32.load offset=28
   call $~lib/map/Map<~lib/string/String,usize>#set:entriesOffset
   global.get $~lib/memory/__stack_pointer
-  i32.const 20
+  i32.const 16
   i32.add
   global.set $~lib/memory/__stack_pointer
  )
  (func $~lib/map/Map<~lib/string/String,usize>#set (param $0 i32) (param $1 i32) (param $2 i32) (result i32)
-  (local $3 i32)
+  (local $3 i64)
   (local $4 i32)
   (local $5 i32)
   (local $6 i32)
@@ -5012,89 +5332,81 @@
   global.get $~lib/memory/__stack_pointer
   i32.const 0
   i32.store offset=8
-  block $~lib/util/hash/HASH<~lib/string/String>|inlined.2 (result i32)
-   global.get $~lib/memory/__stack_pointer
-   local.get $1
-   local.tee $3
-   i32.store
-   i32.const 1
-   drop
-   local.get $3
-   local.set $7
-   global.get $~lib/memory/__stack_pointer
-   local.get $7
-   i32.store offset=4
-   local.get $7
-   call $~lib/util/hash/hashStr
-   br $~lib/util/hash/HASH<~lib/string/String>|inlined.2
-  end
-  local.set $4
+  local.get $1
+  local.set $7
+  global.get $~lib/memory/__stack_pointer
+  local.get $7
+  i32.store
+  local.get $7
+  call $~lib/util/hash/HASH<~lib/string/String>
+  local.set $3
   local.get $0
   local.set $7
   global.get $~lib/memory/__stack_pointer
   local.get $7
-  i32.store offset=4
+  i32.store
   local.get $7
   local.get $1
   local.set $7
   global.get $~lib/memory/__stack_pointer
   local.get $7
-  i32.store offset=8
+  i32.store offset=4
   local.get $7
-  local.get $4
+  local.get $3
   call $~lib/map/Map<~lib/string/String,usize>#find
-  local.set $5
-  local.get $5
+  local.set $4
+  local.get $4
   if
-   local.get $5
+   local.get $4
    local.get $2
    call $~lib/map/MapEntry<~lib/string/String,usize>#set:value
    i32.const 0
    drop
   else
    local.get $0
-   i32.load offset=16
+   i32.load offset=24
    local.get $0
-   i32.load offset=12
+   i32.load offset=20
    i32.eq
    if
     local.get $0
     local.set $7
     global.get $~lib/memory/__stack_pointer
     local.get $7
-    i32.store offset=4
+    i32.store
     local.get $7
     local.get $0
-    i32.load offset=20
+    i32.load offset=28
     local.get $0
-    i32.load offset=12
+    i32.load offset=20
     i32.const 3
     i32.mul
     i32.const 4
     i32.div_s
     i32.lt_s
-    if (result i32)
+    if (result i64)
      local.get $0
-     i32.load offset=4
+     i64.load offset=8
     else
      local.get $0
-     i32.load offset=4
-     i32.const 1
-     i32.shl
-     i32.const 1
-     i32.or
+     i64.load offset=8
+     i64.const 1
+     i64.shl
+     i64.const 1
+     i64.or
     end
+    i32.wrap_i64
     call $~lib/map/Map<~lib/string/String,usize>#rehash
    end
    global.get $~lib/memory/__stack_pointer
    local.get $0
-   i32.load offset=8
-   local.tee $3
-   i32.store
-   local.get $3
-   local.get $0
-   local.get $0
    i32.load offset=16
+   local.tee $5
+   i32.store offset=8
+   local.get $5
+   local.get $0
+   local.get $0
+   i32.load offset=24
    local.tee $6
    i32.const 1
    i32.add
@@ -5103,8 +5415,8 @@
    i32.const 12
    i32.mul
    i32.add
-   local.set $5
-   local.get $5
+   local.set $4
+   local.get $4
    local.get $1
    call $~lib/map/MapEntry<~lib/string/String,usize>#set:key
    i32.const 1
@@ -5113,33 +5425,34 @@
    local.get $1
    i32.const 1
    call $~lib/rt/itcms/__link
-   local.get $5
+   local.get $4
    local.get $2
    call $~lib/map/MapEntry<~lib/string/String,usize>#set:value
    i32.const 0
    drop
    local.get $0
    local.get $0
-   i32.load offset=20
+   i32.load offset=28
    i32.const 1
    i32.add
    call $~lib/map/Map<~lib/string/String,usize>#set:entriesCount
    local.get $0
    i32.load
-   local.get $4
+   local.get $3
    local.get $0
-   i32.load offset=4
-   i32.and
+   i64.load offset=8
+   i64.and
+   i32.wrap_i64
    i32.const 4
    i32.mul
    i32.add
    local.set $6
-   local.get $5
+   local.get $4
    local.get $6
    i32.load
    call $~lib/map/MapEntry<~lib/string/String,usize>#set:taggedNext
    local.get $6
-   local.get $5
+   local.get $4
    i32.store
   end
   local.get $0
@@ -5151,7 +5464,7 @@
   local.get $7
  )
  (func $~lib/map/Map<usize,~lib/string/String>#set (param $0 i32) (param $1 i32) (param $2 i32) (result i32)
-  (local $3 i32)
+  (local $3 i64)
   (local $4 i32)
   (local $5 i32)
   (local $6 i32)
@@ -5164,32 +5477,9 @@
   global.get $~lib/memory/__stack_pointer
   i64.const 0
   i64.store
-  block $~lib/util/hash/HASH<usize>|inlined.0 (result i32)
-   local.get $1
-   local.set $3
-   i32.const 0
-   drop
-   i32.const 0
-   drop
-   i32.const 0
-   drop
-   i32.const 4
-   i32.const 1
-   i32.eq
-   drop
-   i32.const 4
-   i32.const 2
-   i32.eq
-   drop
-   i32.const 4
-   i32.const 4
-   i32.eq
-   drop
-   local.get $3
-   call $~lib/util/hash/hash32
-   br $~lib/util/hash/HASH<usize>|inlined.0
-  end
-  local.set $4
+  local.get $1
+  call $~lib/util/hash/HASH<usize>
+  local.set $3
   local.get $0
   local.set $7
   global.get $~lib/memory/__stack_pointer
@@ -5197,12 +5487,12 @@
   i32.store
   local.get $7
   local.get $1
-  local.get $4
+  local.get $3
   call $~lib/map/Map<usize,~lib/string/String>#find
-  local.set $5
-  local.get $5
+  local.set $4
+  local.get $4
   if
-   local.get $5
+   local.get $4
    local.get $2
    call $~lib/map/MapEntry<usize,~lib/string/String>#set:value
    i32.const 1
@@ -5213,9 +5503,9 @@
    call $~lib/rt/itcms/__link
   else
    local.get $0
-   i32.load offset=16
+   i32.load offset=24
    local.get $0
-   i32.load offset=12
+   i32.load offset=20
    i32.eq
    if
     local.get $0
@@ -5225,36 +5515,37 @@
     i32.store
     local.get $7
     local.get $0
-    i32.load offset=20
+    i32.load offset=28
     local.get $0
-    i32.load offset=12
+    i32.load offset=20
     i32.const 3
     i32.mul
     i32.const 4
     i32.div_s
     i32.lt_s
-    if (result i32)
+    if (result i64)
      local.get $0
-     i32.load offset=4
+     i64.load offset=8
     else
      local.get $0
-     i32.load offset=4
-     i32.const 1
-     i32.shl
-     i32.const 1
-     i32.or
+     i64.load offset=8
+     i64.const 1
+     i64.shl
+     i64.const 1
+     i64.or
     end
+    i32.wrap_i64
     call $~lib/map/Map<usize,~lib/string/String>#rehash
    end
    global.get $~lib/memory/__stack_pointer
    local.get $0
-   i32.load offset=8
-   local.tee $3
-   i32.store offset=4
-   local.get $3
-   local.get $0
-   local.get $0
    i32.load offset=16
+   local.tee $5
+   i32.store offset=4
+   local.get $5
+   local.get $0
+   local.get $0
+   i32.load offset=24
    local.tee $6
    i32.const 1
    i32.add
@@ -5263,13 +5554,13 @@
    i32.const 12
    i32.mul
    i32.add
-   local.set $5
-   local.get $5
+   local.set $4
+   local.get $4
    local.get $1
    call $~lib/map/MapEntry<usize,~lib/string/String>#set:key
    i32.const 0
    drop
-   local.get $5
+   local.get $4
    local.get $2
    call $~lib/map/MapEntry<usize,~lib/string/String>#set:value
    i32.const 1
@@ -5280,26 +5571,27 @@
    call $~lib/rt/itcms/__link
    local.get $0
    local.get $0
-   i32.load offset=20
+   i32.load offset=28
    i32.const 1
    i32.add
    call $~lib/map/Map<usize,~lib/string/String>#set:entriesCount
    local.get $0
    i32.load
-   local.get $4
+   local.get $3
    local.get $0
-   i32.load offset=4
-   i32.and
+   i64.load offset=8
+   i64.and
+   i32.wrap_i64
    i32.const 4
    i32.mul
    i32.add
    local.set $6
-   local.get $5
+   local.get $4
    local.get $6
    i32.load
    call $~lib/map/MapEntry<usize,~lib/string/String>#set:taggedNext
    local.get $6
-   local.get $5
+   local.get $4
    i32.store
   end
   local.get $0
@@ -5423,7 +5715,6 @@
  )
  (func $~lib/map/Map<usize,~lib/string/String>#has (param $0 i32) (param $1 i32) (result i32)
   (local $2 i32)
-  (local $3 i32)
   global.get $~lib/memory/__stack_pointer
   i32.const 4
   i32.sub
@@ -5433,51 +5724,27 @@
   i32.const 0
   i32.store
   local.get $0
-  local.set $3
+  local.set $2
   global.get $~lib/memory/__stack_pointer
-  local.get $3
+  local.get $2
   i32.store
-  local.get $3
+  local.get $2
   local.get $1
-  block $~lib/util/hash/HASH<usize>|inlined.2 (result i32)
-   local.get $1
-   local.set $2
-   i32.const 0
-   drop
-   i32.const 0
-   drop
-   i32.const 0
-   drop
-   i32.const 4
-   i32.const 1
-   i32.eq
-   drop
-   i32.const 4
-   i32.const 2
-   i32.eq
-   drop
-   i32.const 4
-   i32.const 4
-   i32.eq
-   drop
-   local.get $2
-   call $~lib/util/hash/hash32
-   br $~lib/util/hash/HASH<usize>|inlined.2
-  end
+  local.get $1
+  call $~lib/util/hash/HASH<usize>
   call $~lib/map/Map<usize,~lib/string/String>#find
   i32.const 0
   i32.ne
-  local.set $3
+  local.set $2
   global.get $~lib/memory/__stack_pointer
   i32.const 4
   i32.add
   global.set $~lib/memory/__stack_pointer
-  local.get $3
+  local.get $2
  )
  (func $~lib/map/Map<usize,~lib/string/String>#get (param $0 i32) (param $1 i32) (result i32)
   (local $2 i32)
   (local $3 i32)
-  (local $4 i32)
   global.get $~lib/memory/__stack_pointer
   i32.const 4
   i32.sub
@@ -5487,40 +5754,17 @@
   i32.const 0
   i32.store
   local.get $0
-  local.set $4
-  global.get $~lib/memory/__stack_pointer
-  local.get $4
-  i32.store
-  local.get $4
-  local.get $1
-  block $~lib/util/hash/HASH<usize>|inlined.3 (result i32)
-   local.get $1
-   local.set $2
-   i32.const 0
-   drop
-   i32.const 0
-   drop
-   i32.const 0
-   drop
-   i32.const 4
-   i32.const 1
-   i32.eq
-   drop
-   i32.const 4
-   i32.const 2
-   i32.eq
-   drop
-   i32.const 4
-   i32.const 4
-   i32.eq
-   drop
-   local.get $2
-   call $~lib/util/hash/hash32
-   br $~lib/util/hash/HASH<usize>|inlined.3
-  end
-  call $~lib/map/Map<usize,~lib/string/String>#find
   local.set $3
+  global.get $~lib/memory/__stack_pointer
   local.get $3
+  i32.store
+  local.get $3
+  local.get $1
+  local.get $1
+  call $~lib/util/hash/HASH<usize>
+  call $~lib/map/Map<usize,~lib/string/String>#find
+  local.set $2
+  local.get $2
   i32.eqz
   if
    i32.const 624
@@ -5530,14 +5774,14 @@
    call $~lib/builtins/abort
    unreachable
   end
-  local.get $3
+  local.get $2
   i32.load offset=4
-  local.set $4
+  local.set $3
   global.get $~lib/memory/__stack_pointer
   i32.const 4
   i32.add
   global.set $~lib/memory/__stack_pointer
-  local.get $4
+  local.get $3
  )
  (func $~lib/symbol/_Symbol.keyFor (param $0 i32) (result i32)
   (local $1 i32)
@@ -6266,7 +6510,7 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 24
+   i32.const 32
    i32.const 3
    call $~lib/rt/itcms/__new
    local.tee $0
@@ -6280,9 +6524,9 @@
   call $~lib/arraybuffer/ArrayBuffer#constructor
   call $~lib/map/Map<~lib/string/String,usize>#set:buckets
   local.get $0
-  i32.const 4
-  i32.const 1
-  i32.sub
+  i64.const 4
+  i64.const 1
+  i64.sub
   call $~lib/map/Map<~lib/string/String,usize>#set:bucketsMask
   local.get $0
   i32.const 0
@@ -6322,7 +6566,7 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 24
+   i32.const 32
    i32.const 4
    call $~lib/rt/itcms/__new
    local.tee $0
@@ -6336,9 +6580,9 @@
   call $~lib/arraybuffer/ArrayBuffer#constructor
   call $~lib/map/Map<usize,~lib/string/String>#set:buckets
   local.get $0
-  i32.const 4
-  i32.const 1
-  i32.sub
+  i64.const 4
+  i64.const 1
+  i64.sub
   call $~lib/map/Map<usize,~lib/string/String>#set:bucketsMask
   local.get $0
   i32.const 0
