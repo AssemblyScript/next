@@ -1712,6 +1712,8 @@ declare class Array<T> {
   /** Flattens an array of arrays. If any null entries exist in the array, they are ignored, unlike JavaScript's version of Array#flat(). */
   flat(): T extends unknown[] ? T : never;
   toString(): string;
+
+  [Symbol.iterator](): { next(): { value: T, done: boolean } }
 }
 
 /** Class representing a static (not resizable) sequence of values of type `T`. This class is @final. */
@@ -2199,6 +2201,13 @@ declare namespace operator {
     descriptor: TypedPropertyDescriptor<any>
   ) => TypedPropertyDescriptor<any> | void;
 }
+
+/** Annotates an element as an iterator. */
+declare function iterator(
+  target: any,
+  propertyKey: string,
+  descriptor: TypedPropertyDescriptor<any>
+): TypedPropertyDescriptor<any> | void;
 
 /** Annotates an element as a program global. */
 declare function global(...args: any[]): any;

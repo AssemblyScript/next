@@ -3,15 +3,12 @@
  (type $i32_=>_i32 (func (param i32) (result i32)))
  (type $i32_=>_none (func (param i32)))
  (type $none_=>_none (func))
- (type $i32_i32_=>_i32 (func (param i32 i32) (result i32)))
  (type $i32_i32_i32_=>_none (func (param i32 i32 i32)))
- (type $i32_i32_i32_=>_i32 (func (param i32 i32 i32) (result i32)))
- (type $f32_f32_=>_f32 (func (param f32 f32) (result f32)))
- (type $i32_f32_f32_=>_f32 (func (param i32 f32 f32) (result f32)))
+ (type $i32_i32_=>_i32 (func (param i32 i32) (result i32)))
  (type $i32_i32_i32_i32_=>_none (func (param i32 i32 i32 i32)))
+ (type $i32_i32_i32_=>_i32 (func (param i32 i32 i32) (result i32)))
  (type $none_=>_i32 (func (result i32)))
  (import "env" "abort" (func $~lib/builtins/abort (param i32 i32 i32 i32)))
- (global $class/Animal.ONE (mut i32) (i32.const 1))
  (global $~lib/rt/itcms/total (mut i32) (i32.const 0))
  (global $~lib/rt/itcms/threshold (mut i32) (i32.const 0))
  (global $~lib/rt/itcms/state (mut i32) (i32.const 0))
@@ -24,10 +21,10 @@
  (global $~lib/rt/tlsf/ROOT (mut i32) (i32.const 0))
  (global $~lib/ASC_LOW_MEMORY_LIMIT i32 (i32.const 0))
  (global $~lib/ASC_SHRINK_LEVEL i32 (i32.const 0))
- (global $~lib/rt/__rtti_base i32 (i32.const 512))
- (global $~lib/memory/__data_end i32 (i32.const 564))
- (global $~lib/memory/__stack_pointer (mut i32) (i32.const 16948))
- (global $~lib/memory/__heap_base i32 (i32.const 16948))
+ (global $~lib/rt/__rtti_base i32 (i32.const 464))
+ (global $~lib/memory/__data_end i32 (i32.const 508))
+ (global $~lib/memory/__stack_pointer (mut i32) (i32.const 16892))
+ (global $~lib/memory/__heap_base i32 (i32.const 16892))
  (memory $0 1)
  (data (i32.const 12) "<\00\00\00\00\00\00\00\00\00\00\00\01\00\00\00(\00\00\00A\00l\00l\00o\00c\00a\00t\00i\00o\00n\00 \00t\00o\00o\00 \00l\00a\00r\00g\00e\00\00\00\00\00")
  (data (i32.const 76) "<\00\00\00\00\00\00\00\00\00\00\00\01\00\00\00 \00\00\00~\00l\00i\00b\00/\00r\00t\00/\00i\00t\00c\00m\00s\00.\00t\00s\00\00\00\00\00\00\00\00\00\00\00\00\00")
@@ -37,121 +34,12 @@
  (data (i32.const 268) ",\00\00\00\00\00\00\00\00\00\00\00\01\00\00\00\14\00\00\00~\00l\00i\00b\00/\00r\00t\00.\00t\00s\00\00\00\00\00\00\00\00\00")
  (data (i32.const 320) "\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
  (data (i32.const 348) "<\00\00\00\00\00\00\00\00\00\00\00\01\00\00\00\1e\00\00\00~\00l\00i\00b\00/\00r\00t\00/\00t\00l\00s\00f\00.\00t\00s\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
- (data (i32.const 412) ",\00\00\00\00\00\00\00\00\00\00\00\01\00\00\00\1c\00\00\00I\00n\00v\00a\00l\00i\00d\00 \00l\00e\00n\00g\00t\00h\00")
- (data (i32.const 460) ",\00\00\00\00\00\00\00\00\00\00\00\01\00\00\00\1a\00\00\00~\00l\00i\00b\00/\00a\00r\00r\00a\00y\00.\00t\00s\00\00\00")
- (data (i32.const 512) "\06\00\00\00 \00\00\00\00\00\00\00 \00\00\00\00\00\00\00\00\00\00\00\00\00\00\00 \00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\02\t\00\00\00\00\00\00")
+ (data (i32.const 412) ",\00\00\00\00\00\00\00\00\00\00\00\01\00\00\00\12\00\00\00f\00o\00r\00-\00o\00f\00.\00t\00s\00\00\00\00\00\00\00\00\00\00\00")
+ (data (i32.const 464) "\05\00\00\00 \00\00\00\00\00\00\00 \00\00\00\00\00\00\00\00\00\00\00\00\00\00\00 \00\00\00\00\00\00\00 \00\00\00\00\00\00\00")
  (table $0 1 funcref)
  (elem $0 (i32.const 1))
- (export "testGenericInitializer" (func $class/testGenericInitializer))
  (export "memory" (memory $0))
- (export "test" (func $export:class/test))
  (start $~start)
- (func $class/Animal.add (param $0 i32) (param $1 i32) (result i32)
-  local.get $0
-  local.get $1
-  i32.add
-  global.get $class/Animal.ONE
-  i32.add
- )
- (func $class/Animal.sub<f32> (param $0 f32) (param $1 f32) (result f32)
-  local.get $0
-  local.get $1
-  f32.sub
-  global.get $class/Animal.ONE
-  f32.convert_i32_s
-  f32.add
- )
- (func $start:class
-  i32.const 4
-  i32.const 4
-  i32.eq
-  drop
-  global.get $class/Animal.ONE
-  drop
-  i32.const 1
-  i32.const 2
-  call $class/Animal.add
-  drop
-  f32.const 1
-  f32.const 2
-  call $class/Animal.sub<f32>
-  drop
- )
- (func $class/Animal<f64>#instanceAdd (param $0 i32) (param $1 i32) (param $2 i32) (result i32)
-  local.get $1
-  local.get $2
-  i32.add
-  global.get $class/Animal.ONE
-  i32.add
- )
- (func $class/Animal<f64>#instanceSub<f32> (param $0 i32) (param $1 f32) (param $2 f32) (result f32)
-  local.get $1
-  local.get $2
-  f32.sub
-  global.get $class/Animal.ONE
-  f32.convert_i32_s
-  f32.add
- )
- (func $class/Animal<f64>#set:one (param $0 i32) (param $1 i32)
-  local.get $0
-  local.get $1
-  i32.store
- )
- (func $class/Animal<f64>#set:two (param $0 i32) (param $1 i32)
-  local.get $0
-  local.get $1
-  i32.store16 offset=4
- )
- (func $class/Animal<f64>#set:three (param $0 i32) (param $1 i32)
-  local.get $0
-  local.get $1
-  i32.store8 offset=6
- )
- (func $class/test (param $0 i32) (result i32)
-  (local $1 i32)
-  (local $2 i32)
-  local.get $0
-  i32.const 1
-  i32.const 2
-  call $class/Animal<f64>#instanceAdd
-  drop
-  local.get $0
-  f32.const 1
-  f32.const 2
-  call $class/Animal<f64>#instanceSub<f32>
-  drop
-  local.get $0
-  i32.load
-  drop
-  local.get $0
-  i32.load16_s offset=4
-  drop
-  local.get $0
-  i32.load8_s offset=6
-  drop
-  local.get $0
-  i32.const 0
-  i32.const 1
-  i32.add
-  call $class/Animal<f64>#set:one
-  local.get $0
-  i32.const 1
-  i32.const 1
-  i32.add
-  call $class/Animal<f64>#set:two
-  local.get $0
-  i32.const 1
-  i32.const 1
-  i32.add
-  i32.const 1
-  i32.add
-  call $class/Animal<f64>#set:three
-  local.get $0
-  local.set $1
-  local.get $1
-  local.set $2
-  local.get $2
- )
  (func $~lib/rt/itcms/Object#set:nextWithColor (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
@@ -2457,198 +2345,38 @@
   call $~lib/memory/memory.fill
   local.get $3
  )
- (func $~lib/rt/itcms/__link (param $0 i32) (param $1 i32) (param $2 i32)
-  (local $3 i32)
-  (local $4 i32)
-  (local $5 i32)
-  local.get $1
-  i32.eqz
-  if
-   return
-  end
-  i32.const 1
-  drop
+ (func $for-of/TestIterator#set:index (param $0 i32) (param $1 i32)
   local.get $0
-  i32.eqz
-  if
-   i32.const 0
-   i32.const 96
-   i32.const 294
-   i32.const 14
-   call $~lib/builtins/abort
-   unreachable
-  end
   local.get $1
-  i32.const 20
-  i32.sub
-  local.set $3
-  local.get $3
-  call $~lib/rt/itcms/Object#get:color
-  global.get $~lib/rt/itcms/white
+  i32.store
+ )
+ (func $for-of/TestIterable#iter (param $0 i32) (result i32)
+  i32.const 0
+  call $for-of/TestIterator#constructor
+ )
+ (func $for-of/TestIterator#done (param $0 i32) (result i32)
+  local.get $0
+  i32.load
+  i32.const 3
   i32.eq
-  if
-   local.get $0
-   i32.const 20
-   i32.sub
-   local.set $4
-   local.get $4
-   call $~lib/rt/itcms/Object#get:color
-   local.set $5
-   local.get $5
-   global.get $~lib/rt/itcms/white
-   i32.eqz
-   i32.eq
-   if
-    local.get $2
-    if
-     local.get $4
-     call $~lib/rt/itcms/Object#makeGray
-    else
-     local.get $3
-     call $~lib/rt/itcms/Object#makeGray
-    end
-   else
-    local.get $5
-    i32.const 3
-    i32.eq
-    if (result i32)
-     global.get $~lib/rt/itcms/state
-     i32.const 1
-     i32.eq
-    else
-     i32.const 0
-    end
-    if
-     local.get $3
-     call $~lib/rt/itcms/Object#makeGray
-    end
-   end
-  end
  )
- (func $class/GenericInitializer<i32>#set:foo (param $0 i32) (param $1 i32)
+ (func $for-of/TestIterator#get:index (param $0 i32) (result i32)
   local.get $0
-  local.get $1
-  i32.store
-  local.get $0
-  local.get $1
-  i32.const 0
-  call $~lib/rt/itcms/__link
+  i32.load
  )
- (func $~lib/array/Array<i32>#set:buffer (param $0 i32) (param $1 i32)
-  local.get $0
-  local.get $1
-  i32.store
-  local.get $0
-  local.get $1
-  i32.const 0
-  call $~lib/rt/itcms/__link
- )
- (func $~lib/array/Array<i32>#set:dataStart (param $0 i32) (param $1 i32)
-  local.get $0
-  local.get $1
-  i32.store offset=4
- )
- (func $~lib/array/Array<i32>#set:byteLength (param $0 i32) (param $1 i32)
-  local.get $0
-  local.get $1
-  i32.store offset=8
- )
- (func $~lib/array/Array<i32>#set:length_ (param $0 i32) (param $1 i32)
-  local.get $0
-  local.get $1
-  i32.store offset=12
- )
- (func $class/testGenericInitializer
-  i32.const 0
-  call $class/GenericInitializer<i32>#constructor
-  drop
- )
- (func $~lib/rt/__visit_globals (param $0 i32)
+ (func $for-of/TestIterator#next (param $0 i32) (result i32)
   (local $1 i32)
-  i32.const 224
   local.get $0
-  call $~lib/rt/itcms/__visit
-  i32.const 432
-  local.get $0
-  call $~lib/rt/itcms/__visit
-  i32.const 32
-  local.get $0
-  call $~lib/rt/itcms/__visit
- )
- (func $~lib/arraybuffer/ArrayBufferView~visit (param $0 i32) (param $1 i32)
-  (local $2 i32)
+  local.tee $1
   local.get $0
   i32.load
-  local.tee $2
-  if
-   local.get $2
-   local.get $1
-   call $~lib/rt/itcms/__visit
-  end
- )
- (func $class/GenericInitializer<i32>~visit (param $0 i32) (param $1 i32)
-  (local $2 i32)
-  local.get $0
-  i32.load
-  local.tee $2
-  if
-   local.get $2
-   local.get $1
-   call $~lib/rt/itcms/__visit
-  end
- )
- (func $~lib/array/Array<i32>#__visit (param $0 i32) (param $1 i32)
-  i32.const 0
-  drop
-  local.get $0
-  i32.load
+  i32.const 1
+  i32.add
+  call $for-of/TestIterator#set:index
   local.get $1
-  call $~lib/rt/itcms/__visit
+  call $for-of/TestIterator#get:index
  )
- (func $~lib/array/Array<i32>~visit (param $0 i32) (param $1 i32)
-  local.get $0
-  local.get $1
-  call $~lib/array/Array<i32>#__visit
- )
- (func $~lib/rt/__visit_members (param $0 i32) (param $1 i32)
-  block $invalid
-   block $~lib/array/Array<i32>
-    block $class/GenericInitializer<i32>
-     block $class/Animal<f64>
-      block $~lib/arraybuffer/ArrayBufferView
-       block $~lib/string/String
-        block $~lib/arraybuffer/ArrayBuffer
-         local.get $0
-         i32.const 8
-         i32.sub
-         i32.load
-         br_table $~lib/arraybuffer/ArrayBuffer $~lib/string/String $~lib/arraybuffer/ArrayBufferView $class/Animal<f64> $class/GenericInitializer<i32> $~lib/array/Array<i32> $invalid
-        end
-        return
-       end
-       return
-      end
-      local.get $0
-      local.get $1
-      call $~lib/arraybuffer/ArrayBufferView~visit
-      return
-     end
-     return
-    end
-    local.get $0
-    local.get $1
-    call $class/GenericInitializer<i32>~visit
-    return
-   end
-   local.get $0
-   local.get $1
-   call $~lib/array/Array<i32>~visit
-   return
-  end
-  unreachable
- )
- (func $~start
-  call $start:class
+ (func $start:for-of
   memory.size
   i32.const 16
   i32.shl
@@ -2666,26 +2394,77 @@
   i32.const 320
   call $~lib/rt/itcms/initLazy
   global.set $~lib/rt/itcms/fromSpace
+  call $for-of/test
+ )
+ (func $~lib/rt/__visit_globals (param $0 i32)
+  (local $1 i32)
+  i32.const 224
+  local.get $0
+  call $~lib/rt/itcms/__visit
+  i32.const 32
+  local.get $0
+  call $~lib/rt/itcms/__visit
+ )
+ (func $~lib/arraybuffer/ArrayBufferView~visit (param $0 i32) (param $1 i32)
+  (local $2 i32)
+  local.get $0
+  i32.load
+  local.tee $2
+  if
+   local.get $2
+   local.get $1
+   call $~lib/rt/itcms/__visit
+  end
+ )
+ (func $~lib/rt/__visit_members (param $0 i32) (param $1 i32)
+  block $invalid
+   block $for-of/TestIterator
+    block $for-of/TestIterable
+     block $~lib/arraybuffer/ArrayBufferView
+      block $~lib/string/String
+       block $~lib/arraybuffer/ArrayBuffer
+        local.get $0
+        i32.const 8
+        i32.sub
+        i32.load
+        br_table $~lib/arraybuffer/ArrayBuffer $~lib/string/String $~lib/arraybuffer/ArrayBufferView $for-of/TestIterable $for-of/TestIterator $invalid
+       end
+       return
+      end
+      return
+     end
+     local.get $0
+     local.get $1
+     call $~lib/arraybuffer/ArrayBufferView~visit
+     return
+    end
+    return
+   end
+   return
+  end
+  unreachable
+ )
+ (func $~start
+  call $start:for-of
  )
  (func $~stack_check
   global.get $~lib/memory/__stack_pointer
   global.get $~lib/memory/__data_end
   i32.lt_s
   if
-   i32.const 16976
-   i32.const 17024
+   i32.const 16912
+   i32.const 16960
    i32.const 1
    i32.const 1
    call $~lib/builtins/abort
    unreachable
   end
  )
- (func $~lib/array/Array<i32>#constructor (param $0 i32) (param $1 i32) (result i32)
+ (func $for-of/test
+  (local $0 i32)
+  (local $1 i32)
   (local $2 i32)
   (local $3 i32)
-  (local $4 i32)
-  (local $5 i32)
-  (local $6 i32)
   global.get $~lib/memory/__stack_pointer
   i32.const 8
   i32.sub
@@ -2694,83 +2473,55 @@
   global.get $~lib/memory/__stack_pointer
   i64.const 0
   i64.store
-  local.get $0
-  i32.eqz
-  if
+  i32.const 0
+  local.set $0
+  block $for_of_done
    global.get $~lib/memory/__stack_pointer
-   i32.const 16
-   i32.const 5
-   call $~lib/rt/itcms/__new
-   local.tee $0
+   i32.const 0
+   call $for-of/TestIterable#constructor
+   local.set $3
+   global.get $~lib/memory/__stack_pointer
+   local.get $3
    i32.store
+   local.get $3
+   call $for-of/TestIterable#iter
+   local.tee $1
+   i32.store offset=4
+   loop $for_of_loop
+    local.get $1
+    call $for-of/TestIterator#done
+    i32.const 1
+    i32.eq
+    br_if $for_of_done
+    local.get $1
+    call $for-of/TestIterator#next
+    local.set $2
+    local.get $0
+    local.get $2
+    i32.add
+    local.set $0
+    br $for_of_loop
+   end
+   unreachable
   end
   local.get $0
-  i32.const 0
-  call $~lib/array/Array<i32>#set:buffer
-  local.get $0
-  i32.const 0
-  call $~lib/array/Array<i32>#set:dataStart
-  local.get $0
-  i32.const 0
-  call $~lib/array/Array<i32>#set:byteLength
-  local.get $0
-  i32.const 0
-  call $~lib/array/Array<i32>#set:length_
-  local.get $1
-  i32.const 1073741820
-  i32.const 2
-  i32.shr_u
-  i32.gt_u
+  i32.const 6
+  i32.eq
+  i32.eqz
   if
+   i32.const 0
    i32.const 432
-   i32.const 480
-   i32.const 75
-   i32.const 60
+   i32.const 26
+   i32.const 5
    call $~lib/builtins/abort
    unreachable
   end
-  local.get $1
-  local.tee $2
-  i32.const 8
-  local.tee $3
-  local.get $2
-  local.get $3
-  i32.gt_u
-  select
-  i32.const 2
-  i32.shl
-  local.set $4
-  global.get $~lib/memory/__stack_pointer
-  local.get $4
-  i32.const 0
-  call $~lib/rt/itcms/__new
-  local.tee $5
-  i32.store offset=4
-  local.get $5
-  i32.const 0
-  local.get $4
-  call $~lib/memory/memory.fill
-  local.get $0
-  local.get $5
-  call $~lib/array/Array<i32>#set:buffer
-  local.get $0
-  local.get $5
-  call $~lib/array/Array<i32>#set:dataStart
-  local.get $0
-  local.get $4
-  call $~lib/array/Array<i32>#set:byteLength
-  local.get $0
-  local.get $1
-  call $~lib/array/Array<i32>#set:length_
-  local.get $0
-  local.set $6
   global.get $~lib/memory/__stack_pointer
   i32.const 8
   i32.add
   global.set $~lib/memory/__stack_pointer
-  local.get $6
  )
- (func $class/GenericInitializer<i32>#constructor (param $0 i32) (result i32)
+ (func $for-of/TestIterable#constructor (param $0 i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
   i32.const 4
@@ -2784,17 +2535,12 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 4
-   i32.const 4
+   i32.const 0
+   i32.const 3
    call $~lib/rt/itcms/__new
    local.tee $0
    i32.store
   end
-  local.get $0
-  i32.const 0
-  i32.const 0
-  call $~lib/array/Array<i32>#constructor
-  call $class/GenericInitializer<i32>#set:foo
   local.get $0
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -2803,7 +2549,7 @@
   global.set $~lib/memory/__stack_pointer
   local.get $1
  )
- (func $export:class/test (param $0 i32) (result i32)
+ (func $for-of/TestIterator#constructor (param $0 i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
   i32.const 4
@@ -2811,10 +2557,22 @@
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
   global.get $~lib/memory/__stack_pointer
-  local.get $0
+  i32.const 0
   i32.store
   local.get $0
-  call $class/test
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 4
+   i32.const 4
+   call $~lib/rt/itcms/__new
+   local.tee $0
+   i32.store
+  end
+  local.get $0
+  i32.const 0
+  call $for-of/TestIterator#set:index
+  local.get $0
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
