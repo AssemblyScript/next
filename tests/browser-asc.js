@@ -1,4 +1,10 @@
 const asc = require("../dist/asc.js");
+const {
+  Parser,
+  newProgram,
+  newOptions,
+} = require("../src");
+
 
 if (typeof asc.definitionFiles.assembly !== "string") throw Error("missing bundled assembly.d.ts");
 if (typeof asc.definitionFiles.portable !== "string") throw Error("missing bundled portable.d.ts");
@@ -81,3 +87,21 @@ process.stdout.write(output.stderr.toString());
 console.log(">>> .text >>>");
 process.stdout.write(output.text);
 console.log(">>> .binary >>> " + output.binary.length + " bytes");
+
+const code = `"hello world"`;
+const program = newProgram(newOptions());
+const parser = program.parser;
+parser.parseFile(code, "index.ts", true);
+console.log(`Before replaceSource node kind: ${parser.sources[0].statements[0].kind}`);
+const newCode = `{}`;
+const newParser = new Parser();
+newParser.parseFile(newCode, "index2.ts", true);
+
+const internalPath = parser.sources[0].internalPath;
+const newCodeSource = newParser.sources[0];
+newCodeSource.internalPath = internalPath;
+program.replaceSource(newCodeSource);
+console.log(`After replaceSource node kind: ${parser.sources[0].statements[0].kind}`);
+if (program.sources[0] != newCodeSource) {
+  throw new Error("source code have not been updated after calling replaceSource!");
+}

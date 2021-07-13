@@ -944,6 +944,18 @@ export class Program extends DiagnosticEmitter {
       : null;
   }
 
+  /** Replace an old source with a new source according to internalPath */
+  replaceSource(newSource: Source): void {
+    var sources = this.sources;
+    for (let i = 0, len = sources.length; i < len; i++) {
+      if (sources[i].internalPath == newSource.internalPath) {
+        sources[i] = newSource;
+        break;
+      }
+    }
+  }
+
+
   /** Initializes the program and its elements prior to compilation. */
   initialize(): void {
     if (this.initialized) return;
